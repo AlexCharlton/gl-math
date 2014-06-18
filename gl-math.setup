@@ -1,0 +1,9 @@
+;; gl-math.setup -*- scheme -*-
+
+(compile -d0 -O3 -Ihypermath/include/ -J -s gl-math.scm hypermath/src/hypermath.c)
+(compile -d0 -O3 -s gl-math.import.scm)
+
+(install-extension
+ 'gl-math
+ '("gl-math.so" "gl-math.import.so")
+ '((version "0.1.0")))

@@ -1,0 +1,7 @@
+;; gl-math.meta -*- scheme -*-
+
+((synopsis "A small gamedev-oriented math library")
+ (author "Alex Charlton")
+ (category math)
+ (license "BSD")
+ (depends matchable))
