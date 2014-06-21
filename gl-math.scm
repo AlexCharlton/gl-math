@@ -143,5 +143,6 @@
   (foreign-lambda float "hpmRadiansToDegrees" float))
 
 (define pi 3.14159265358979)
+(define pi/2 (/ pi 2))
 
 ) ; module end
