@@ -87,7 +87,7 @@ Return the rotation matrix given by rotating by `ROLL` radians followed by `PITC
 
 .Rotate `MATRIX` by `ROLL` radians followed by `PITCH` radians followed by `YAW` radians.
 
-    [procedure] (2d-scaling SCALE-X SCALE-Y MATRIX)
+    [procedure] (2d-scaling SCALE-X SCALE-Y [RESULT])
 
 Return the matrix created by scaling the x and y axes by `SCALE-X` and `SCALE-Y`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
@@ -95,7 +95,7 @@ Return the matrix created by scaling the x and y axes by `SCALE-X` and `SCALE-Y`
 
 Scale the x and y axis of `MATRIX` by `SCALE-X` and `SCALE-Y`.
 
-    [procedure] (3d-scaling SCALE-X SCALE-Y SCALE-Z MATRIX)
+    [procedure] (3d-scaling SCALE-X SCALE-Y SCALE-Z [RESULT])
 
 Return the matrix created by scaling the x, y and z axes by `SCALE-X`, `SCALE-Y`, and `SCALE-Z`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
@@ -103,7 +103,7 @@ Return the matrix created by scaling the x, y and z axes by `SCALE-X`, `SCALE-Y`
 
 Scale the x, y, and z axis of `MATRIX` by `SCALE-X`, `SCALE-Y`, and `SCALE-Z`.
 
-    [procedure] (scaling SCALE MATRIX)
+    [procedure] (scaling SCALE [RESULT])
 
 Return the matrix created by scaling the x, y and z axes by `SCALE`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
