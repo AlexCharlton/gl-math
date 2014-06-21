@@ -200,6 +200,16 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
+### Version 0.2.0
+21 June 2014
+
+* Each transformation function now has two variants: one that initializes a matrix, and one that operates on a matrix
+* Provide `pi/2`
+* Provide quaternion and YPR rotation
+* Remove unhelpful composite operations
+* Fix optional arguments for matrix operations
+* Fix a bug in `look-at`
+
 ### Version 0.1.0
 17 June 2014
 
