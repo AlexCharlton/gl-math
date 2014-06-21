@@ -25,7 +25,10 @@
                                    types)]
                [vars (map first other-vars)])
           `(begin
-             (define (,vector-name ,@vars #!optional (,main-mat (make-f32vector 16)))
+             (define (,vector-name ,@vars
+                                   ,@(if result?
+                                         `(#!optional (,main-mat (make-f32vector 16)))
+                                         `(,main-mat)))
                ((foreign-lambda ,return ,c-name ,@types f32vector)
                 ,@vars ,main-mat)
                ,main-mat)
@@ -33,7 +36,8 @@
                ((foreign-lambda ,return ,c-name ,@pointer-types c-pointer)
                 ,@vars ,main-mat)
                ,main-mat)
-             (define (,name ,@vars #!optional ,main-mat)
+             (define (,name ,@vars ,@(if result? '(#!optional) '())
+                            ,main-mat)
                (cond
                 [(pointer? ,main-mat) (,pointer-name ,@vars ,main-mat)]
                 [(f32vector? ,main-mat) (,vector-name ,@vars ,main-mat)]
