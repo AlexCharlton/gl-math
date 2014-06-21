@@ -65,36 +65,53 @@
                  (mat-a f32vector) (mat-b f32vector) (result f32vector))
 (bind-matrix-fun mat4-identity "hpmIdentityMat4" void
                  (result f32vector))
+(bind-matrix-fun translation "hpmTranslation" void
+                 (x float) (y float) (z float) (matrix f32vector))
 (bind-matrix-fun translate "hpmTranslate" void
                  (x float) (y float) (z float) (matrix f32vector))
+(bind-matrix-fun x-rotation "hpmXRotation" void
+                 (rotation float) (matrix f32vector))
 (bind-matrix-fun rotate-x "hpmRotateX" void
+                 (rotation float) (matrix f32vector))
+(bind-matrix-fun y-rotation "hpmYRotation" void
                  (rotation float) (matrix f32vector))
 (bind-matrix-fun rotate-y "hpmRotateY" void
                  (rotation float) (matrix f32vector))
+(bind-matrix-fun z-rotation "hpmZRotation" void
+                 (rotation float) (matrix f32vector))
 (bind-matrix-fun rotate-z "hpmRotateZ" void
                  (rotation float) (matrix f32vector))
+(bind-matrix-fun rotation "hpmRotation" void
+                 (x float) (y float) (z float) (angle float) (matrix f32vector))
 (bind-matrix-fun rotate "hpmRotate" void
                  (x float) (y float) (z float) (angle float) (matrix f32vector))
+(bind-matrix-fun quaternion-rotation "hpmQuaternionRotation" void
+                 (x float) (y float) (z float) (w float) (matrix f32vector))
+(bind-matrix-fun rotate-quaternion "hpmRotateQuaternion" void
+                 (x float) (y float) (z float) (w float) (matrix f32vector))
+(bind-matrix-fun ypr-rotation "hpmYPRRotation" void
+                 (yaw float) (pitch float) (roll float) (matrix f32vector))
+(bind-matrix-fun rotate-ypr "hpmRotateYPR" void
+                 (yaw float) (pitch float) (roll float) (matrix f32vector))
+(bind-matrix-fun 2d-scaling "hpm2DScaling" void
+                 (scale-x float) (scale-y float) (matrix f32vector))
 (bind-matrix-fun scale-2d "hpmScale2D" void
                  (scale-x float) (scale-y float) (matrix f32vector))
+(bind-matrix-fun 3d-scaling "hpm3DScaling" void
+                 (scale-x float) (scale-y float) (scale-z float) (matrix f32vector))
 (bind-matrix-fun scale-3d "hpmScale3D" void
                  (scale-x float) (scale-y float) (scale-z float) (matrix f32vector))
+(bind-matrix-fun scaling "hpmScaling" void
+                 (scale float) (matrix f32vector))
 (bind-matrix-fun scale "hpmScale" void
                  (scale float) (matrix f32vector))
-(bind-matrix-fun flip-x "hphpmFlipY" void
+(bind-matrix-fun flip-x "hpmFlipY" void
                  (matrix f32vector))
 (bind-matrix-fun flip-z "hpmFlipZ" void
                  (matrix f32vector))
-(bind-matrix-fun translate-scale "hpmTranslateScale" void
-                 (x float) (y float) (z float) (scale float)
-                 (result f32vector))
 (bind-matrix-fun translate-rotate-scale-2d "hpmTranslateRotateScale2D" void
                  (x float) (y float) (z float) (rotate float) (scale float) 
                  (result f32vector))
-(bind-matrix-fun translate-rotate-scale "hpmTranslateRotateScale" void
-                 (x float) (y float) (z float) 
-                 (rotate-x float) (rotate-y float) (rotate-z float)
-                 (rotate-angle float) (scale float) (result f32vector))
 (bind-matrix-fun transpose "hpmTranspose" void
                  (matrix f32vector) (result f32vector))
 (bind-matrix-fun inverse "hpmInverse" void
