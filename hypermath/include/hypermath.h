@@ -1,6 +1,13 @@
 #ifndef HYPERMATH
 #define HYPERMATH 1
 
+typedef struct {
+    float _11, _21, _31, _41,
+          _12, _22, _32, _42,
+	  _13, _23, _33, _43,
+	  _14, _24, _34, _44;
+} HPMmat4;
+
 float hpmDegreesToRadians(float deg);
 
 float hpmRadiansToDegrees(float rad);
@@ -11,19 +18,43 @@ void hpmPrintMat4(const float *m);
 
 void hpmIdentityMat4(float *m);
 
+void hpmTranslation(float x, float y, float z, float *mat);
+
 void hpmTranslate(float x, float y, float z, float *mat);
+
+void hpmXRotation(float rotation, float *mat);
 
 void hpmRotateX(float rotation, float *mat);
 
+void hpmYRotation(float rotation, float *mat);
+
 void hpmRotateY(float rotation, float *mat);
+
+void hpmZRotation(float rotation, float *mat);
 
 void hpmRotateZ(float rotation, float *mat);
 
+void hpmRotation(float x, float y, float z, float angle, float *mat);
+
 void hpmRotate(float x, float y, float z, float angle, float *mat);
+
+void hpmQuaternionRotation(float x, float y, float z, float w, float *mat);
+
+void hpmRotateQuaternion(float x, float y, float z, float w, float *mat);
+
+void hpmYPRRotation(float yaw, float pitch, float roll, float *mat);
+
+void hpmRotateYPR(float yaw, float pitch, float roll, float *mat);
+
+void hpm2DScaling(float scaleX, float scaleY, float *mat);
 
 void hpmScale2D(float scaleX, float scaleY, float *mat);
 
+void hpm3DScaling(float scaleX, float scaleY, float scaleZ, float *mat);
+
 void hpmScale3D(float scaleX, float scaleY, float scaleZ, float *mat);
+
+void hpmScaling(float factor, float *mat);
 
 void hpmScale(float factor, float *mat);
 
@@ -33,14 +64,8 @@ void hpmFlipY(float *mat);
 
 void hpmFlipZ(float *mat);
 
-void hpmTranslateScale(float x, float y, float z, float scale, float *mat);
-
 void hpmTranslateRotateScale2D(float x, float y, float z, float angle, float scale,
                                float *mat);
-
-void hpmTranslateRotateScale(float x, float y, float z, 
-			     float rx, float ry, float rz, float angle,
-                             float scale, float *mat);
 
 void hpmTranspose(const float *mat, float *result);
 

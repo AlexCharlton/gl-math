@@ -20,26 +20,62 @@ Multiply matrix `A` and `B` into `results`.
     void hpmIdentityMat4(float *m);
 Turn the given matrix into an identity matrix.
     
+    void hpmTranslation(float x, float y, float z, float *mat);
+Create the translation matrix given by `x`, `y`, and `z` in the given matrix.
+
     void hpmTranslate(float x, float y, float z, float *mat);
 Multiply the given matrix by the translation matrix created with `x`, `y`, and `z`.
+
+    void hpmXRotation(float rotation, float *mat);
+Create the rotation matrix of `rotation` radians around the X-axis in the given matrix.
 
     void hpmRotateX(float rotation, float *mat);
 Rotate the given matrix around the X-axis by `rotation` radians.
 
+    void hpmYRotation(float rotation, float *mat);
+Create the rotation matrix of `rotation` radians around the Y-axis in the given matrix.
+
     void hpmRotateY(float rotation, float *mat);
 Rotate the given matrix around the Y-axis by `rotation` radians.
+
+    void hpmZRotation(float rotation, float *mat);
+Create the rotation matrix of `rotation` radians around the Z-axis in the given matrix.
 
     void hpmRotateZ(float rotation, float *mat);
 Rotate the given matrix around the Z-axis by `rotation` radians.
 
+    void hpmRotation(float x, float y, float z, float angle, float *mat);
+Create the rotation matrix of `angle` radians around the axis `(x, y, z)` in the given matrix.
+
     void hpmRotate(float x, float y, float z, float angle, float *mat);
 Rotate the given matrix around the vector given by `x`, `y`, and `z` by `angle` radians.
+
+    void hpmQuaternionRotation(float x, float y, float z, float w, float *mat);
+Create the rotation matrix given by the quaternion `(x, y, z, q)` in the given matrix.
+
+    void hpmRotateQuaternion(float x, float y, float z, float w, float *mat);
+Rotate the given matrix around the quaternion `(x, y, z, q)`.
+
+    void hpmYPRRotation(float yaw, float pitch, float roll, float *mat);
+Create the rotation matrix given by transforming by `roll` radians followed by `pitch` radians followed by `yaw` radians in the given matrix.
+
+    void hpmRotateYPR(float yaw, float pitch, float roll, float *mat);
+Rotate the given matrix by transforming by `roll` radians followed by `pitch` radians followed by `yaw` radians.
+
+    void hpm2DScaling(float scaleX, float scaleY, float *mat);
+Create the scaling matrix created by multiplying the x and y axis by `scaleX` and `scaleY` in the given matrix.
 
     void hpmScale2D(float scaleX, float scaleY, float *mat);
 Scale the x and y axis of the given matrix by `scaleX` and `scaleY`.
 
+    void hpm3DScaling(float scaleX, float scaleY, float scaleZ, float *mat);
+Create the scaling matrix created by multiplying the x, y and z axis by `scaleX`, `scaleY`, and `scaleZ` in the given matrix.
+
     void hpmScale3D(float scaleX, float scaleY, float scaleZ, float *mat);
 Scale the x, y, and z axis of the given matrix by `scaleX`, `scaleY`, and `scaleZ`.
+
+    void hpmScaling(float factor, float *mat);
+Create the scaling matrix created by multiplying the x, y and z axis by `factor` in the given matrix.
 
     void hpmScale(float scale, float *mat);
 Scale the x, y, and z axis of the given matrix by `scale`.
@@ -53,14 +89,8 @@ Flip (mirror) the given matrix along the y-axis.
     void hpmFlipZ(float *mat);
 Flip (mirror) the given matrix along the z-axis.
 
-    void hpmTranslateScale(float x, float y, float z, float scale, float *mat);
-Efficiently create a matrix translated by `x`, `y`, and `z` then scaled by `scale`. 
-
     void hpmTranslateRotateScale2D(float x, float y, float z, float angle, float scale, float *mat);
 Efficiently create a matrix translated by `x`, `y`, and `z`, rotated around the z-axis by `angle` then scaled by `scale`. 
-
-    void hpmTranslateRotateScale(float x, float y, float z, float qx, float qy, float qz, float qw, float scale, float *mat);
-Efficiently create a matrix translated by `x`, `y`, and `z`, rotated around the axis given by `(rx, ry, rz)` by `angle` then scaled by `scale`. 
 
     void hpmTranspose(const float *mat, float *result);
 Transpose the given matrix into `result`
@@ -104,6 +134,12 @@ Convert radians into degrees.
 
 
 ## Version history
+### Version 0.2.0
+* Each transformation function now has two variants: one that initializes a matrix, and one that operates on a matrix
+* Provide quaternion and YPR rotation
+* Remove unhelpful composite operations
+* Fix a bug in `hpmLookAt`
+
 ### Version 0.1.0
 * Initial release
 
