@@ -4,7 +4,7 @@
 (import-for-syntax matchable data-structures)
 (use lolevel srfi-4)
 
-#> #include "hypermath.h"
+#> #include <hypermath.h>
 <#
 
 (define-syntax bind-matrix-fun
