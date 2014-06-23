@@ -31,6 +31,24 @@ float hpmDot(float ax, float ay, float az, float bx, float by, float bz){
     return ax*bx + ay*by + az*bz;
 }
 
+void hpmMat4VecMult(const float *mat, float *vec){
+    HPMmat4 *m = (HPMmat4 *) mat;
+    float x, y, z;
+    x = vec[0]; y = vec[1]; z = vec[2];
+    vec[0] = m->_11*x + m->_12*y + m->_13*z + m->_14;
+    vec[1] = m->_21*x + m->_22*y + m->_23*z + m->_24;
+    vec[2] = m->_31*x + m->_32*y + m->_33*z + m->_34;
+}
+
+void hpmMat4VecArrayMult(const float *mat, float *vec, size_t length, size_t stride){
+    int i;
+    stride = (stride) ? stride : 3 * sizeof(float);
+    for (i = 0; i < length; i++){
+        hpmMat4VecMult(mat, vec);
+        vec = ((float *) ((char *) vec + stride));
+    }
+}
+
 // Matrix operations
 static void initMat4(HPMmat4 *m){
   memset(m, 0, sizeof(HPMmat4));
