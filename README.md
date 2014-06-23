@@ -170,6 +170,13 @@ Return the result of the dot product between the vectors `(AX, AY, AZ)` and `(BX
 
 Return the normalized vector `(X, Y, Z)`. The resulting vector is returned as three values.
 
+    [procedure] (m*vector! MATRIX VECTOR)
+Destructively multiply the 3 element f32vector `VECTOR` by `MATRIX`.
+
+    [procedure] (m*vector-array! MATRIX VECTORS [STRIDE])
+Destructively multiply the array of 3 element f32vectors `VECTORS` by `MATRIX`. The optional `STRIDE` specifies the number of elements between consecutive vectors. When `MATRIX` is a pointer, stride is given in number of bytes and must be at least 12. When `MATRIX` is an f32vector, stride is given in number of floats and must be at least 3.
+
+
 ### Angle operations
     [procedure] (degrees->radians ANGLE)
 
