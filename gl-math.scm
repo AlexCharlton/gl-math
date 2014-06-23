@@ -147,7 +147,7 @@
     ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
    (else (error m*vector! "Wrong argument type" matrix))))
 
-(define (m*vector-array! matrix vector [stride 0])
+(define (m*vector-array! matrix vector #!optional (stride 0))
   (cond
    ((pointer? matrix)
     (when (< stride 12)
