@@ -139,6 +139,24 @@
                  (camera f32vector)
                  (result f32vector))
 
+(define (m*vector! matrix vector)
+  (cond
+   ((pointer? matrix)
+    ((foreign-lambda void "hpmMat4VecMult" c-pointer f32vector) matrix vector))
+   ((f32vector? matrix)
+    ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
+   (else (error print-mat4 "Wrong argument type" matrix))))
+
+(define (m*vector-array! matrix vector [stride])
+  (cond
+   ((pointer? matrix)
+    ((foreign-lambda void "hpmMat4VecArrayMult" c-pointer f32vector size_t size_t)
+     matrix vector (quotient (f32vector-length vector) 3) stride))
+   ((f32vector? matrix)
+    ((foreign-lambda void "hpmMat4VecArrayMult" f32vector f32vector size_t size_t)
+     matrix vector (quotient (f32vector-length vector) 3) (* stride 3)))
+   (else (error print-mat4 "Wrong argument type" matrix))))
+
 (define (cross-product ax ay az bx by bz)
   (let-location ([rx float] [ry float] [rz float])
     ((foreign-lambda void "hpmCross" float float float float float float
