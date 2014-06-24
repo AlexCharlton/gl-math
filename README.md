@@ -207,7 +207,7 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
-### Version 0.3.0
+### Version 0.3.1
 23 June 2014
 
 * Matrix vector multiplication
