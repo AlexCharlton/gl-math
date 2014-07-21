@@ -206,7 +206,14 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
-### Version 0.3.1
+### Version 0.3.2
+21 July 2014
+
+* Allow pointer to array of vectors to be passed to `m*vector-array!`
+* Fix error forms
+
+**Version 0.3.1**
+
 23 June 2014
 
 * Matrix vector multiplication
