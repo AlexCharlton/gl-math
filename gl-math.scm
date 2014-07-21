@@ -63,7 +63,7 @@
             (vr 1) (vr 5) (vr 9) (vr 13)
             (vr 2) (vr 6) (vr 10) (vr 14)
             (vr 3) (vr 7) (vr 11) (vr 15))]
-   [else (error print-mat4 "Wrong argument type" matrix)]))
+   [else (error 'print-mat4 "Wrong argument type" matrix)]))
 
 (bind-matrix-fun m* "hpmMultMat4" void
                  (mat-a f32vector) (mat-b f32vector) (result f32vector))
@@ -145,21 +145,21 @@
     ((foreign-lambda void "hpmMat4VecMult" c-pointer f32vector) matrix vector))
    ((f32vector? matrix)
     ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
-   (else (error m*vector! "Wrong argument type" matrix))))
+   (else (error 'm*vector! "Wrong argument type" matrix))))
 
 (define (m*vector-array! matrix vector #!optional (stride 0))
   (cond
    ((pointer? matrix)
     (when (and (< stride 12) (not (zero? stride)))
-      (error m*vector-array! "Stride must be at least 12" stride))
+      (error 'm*vector-array! "Stride must be at least 12" stride))
     ((foreign-lambda void "hpmMat4VecArrayMult" c-pointer f32vector size_t size_t)
      matrix vector (quotient (f32vector-length vector) 3) stride))
    ((f32vector? matrix)
     (when (and (< stride 3) (not (zero? stride)))
-      (error m*vector-array! "Stride must be at least 3" stride))
+      (error 'm*vector-array! "Stride must be at least 3" stride))
     ((foreign-lambda void "hpmMat4VecArrayMult" f32vector f32vector size_t size_t)
      matrix vector (quotient (f32vector-length vector) 3) (* stride 4)))
-   (else (error m*vector-array! "Wrong argument type" matrix))))
+   (else (error 'm*vector-array! "Wrong argument type" matrix))))
 
 (define (cross-product ax ay az bx by bz)
   (let-location ([rx float] [ry float] [rz float])
