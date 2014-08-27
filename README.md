@@ -11,6 +11,10 @@ None
 All matrices must be arrays of 16 floats.
 
 ### Matrix operations
+    void hpmCopyMat4(const float *source, float *dest);
+
+Copy the data from matrix `source` into `dest`.
+
     void hpmPrintMat4(const float *m);
 Print the given 4x4 matrix.
 
@@ -141,6 +145,12 @@ Convert radians into degrees.
 
 
 ## Version history
+### Version 0.4.0
+* Export `hpmCopyMat4`
+
+### Version 0.3.0
+* Matrix vector multiplication
+
 ### Version 0.2.0
 * Each transformation function now has two variants: one that initializes a matrix, and one that operates on a matrix
 * Provide quaternion and YPR rotation

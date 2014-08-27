@@ -8,6 +8,8 @@ typedef struct {
 	  _14, _24, _34, _44;
 } HPMmat4;
 
+void hpmCopyMat4(const float *source, float *dest);
+
 float hpmDegreesToRadians(float deg);
 
 float hpmRadiansToDegrees(float rad);
