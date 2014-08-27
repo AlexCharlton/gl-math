@@ -27,6 +27,10 @@ gl-math operates on matrices in a column-major fashion in correspondence with Op
 
 Prints the given `MATRIX` to `(current-output-port)`.
 
+    [procedure] (copy-mat4 MATRIX [RESULT])
+
+Make a copy of `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the contents of `MATRIX`. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+
     [procedure] (m* A B [RESULT])
 
 Multiply matrix `A` by matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
@@ -174,7 +178,7 @@ Return the normalized vector `(X, Y, Z)`. The resulting vector is returned as th
 Destructively multiply the 3 element f32vector `VECTOR` by `MATRIX`.
 
     [procedure] (m*vector-array! MATRIX VECTORS stride: [STRIDE] length: [LENGTH])
-Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in bytes (which must be at least 12). `VECTORS` may be given as a f32vector or a pointer. When given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
+Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in bytes (which must be at least 12). `VECTORS` may be given as an f32vector or a pointer. When given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
 
 ### Angle operations
     [procedure] (degrees->radians ANGLE)
