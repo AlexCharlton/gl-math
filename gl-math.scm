@@ -65,6 +65,8 @@
             (vr 3) (vr 7) (vr 11) (vr 15))]
    [else (error 'print-mat4 "Wrong argument type" matrix)]))
 
+(bind-matrix-fun copy-mat4 "hpmCopyMat4" void
+                 (source f32vector) (result f32vector))
 (bind-matrix-fun m* "hpmMultMat4" void
                  (mat-a f32vector) (mat-b f32vector) (result f32vector))
 (bind-matrix-fun mat4-identity "hpmIdentityMat4" void
