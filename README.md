@@ -85,7 +85,7 @@ Return the rotation matrix given by rotating by `ROLL` radians followed by `PITC
 
     [procedure] (rotate-ypr YAW PITCH ROLL MATRIX)
 
-.Rotate `MATRIX` by `ROLL` radians followed by `PITCH` radians followed by `YAW` radians.
+Rotate `MATRIX` by `ROLL` radians followed by `PITCH` radians followed by `YAW` radians.
 
     [procedure] (2d-scaling SCALE-X SCALE-Y [RESULT])
 
