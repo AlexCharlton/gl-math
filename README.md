@@ -210,6 +210,11 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
+## Version 0.4.0
+27 July 2014
+
+* Add `copy-mat4`
+
 ### Version 0.3.2
 21 July 2014
 
