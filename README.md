@@ -178,7 +178,7 @@ Return the normalized vector `(X, Y, Z)`. The resulting vector is returned as th
 Destructively multiply the 3 element f32vector `VECTOR` by `MATRIX`.
 
     [procedure] (m*vector-array! MATRIX VECTORS stride: [STRIDE] length: [LENGTH])
-Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in bytes (which must be at least 12). `VECTORS` may be given as an f32vector or a pointer. When given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
+Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in number of floats (which must be at least 3). `VECTORS` may be given as an f32vector or a pointer. When given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
 
 ### Angle operations
     [procedure] (degrees->radians ANGLE)
