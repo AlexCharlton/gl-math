@@ -150,8 +150,8 @@
    (else (error 'm*vector! "Wrong argument type" matrix))))
 
 (define (m*vector-array! matrix vector #!key (stride 0) (length 0))
-  (when (and (< stride 12) (not (zero? stride)))
-    (error 'm*vector-array! "Stride must be at least 12" stride))
+  (when (and (< stride 3) (not (zero? stride)))
+    (error 'm*vector-array! "Stride must be at least 3" stride))
   (cond
    ((f32vector? vector)
     ((cond
@@ -160,7 +160,9 @@
       ((pointer? matrix)
        (foreign-lambda void "hpmMat4VecArrayMult" c-pointer f32vector size_t size_t))
       (else (error 'm*vector-array! "Wrong argument type" matrix)))
-     matrix vector (quotient (f32vector-length vector) 3) stride))
+     matrix vector (quotient (f32vector-length vector)
+                             (if (zero? stride) 3 stride))
+     (* stride 4)))
    ((pointer? vector)
     (when (< length 1)
       (error 'm*vector-array! "length must be given (and positive) when vector is a pointer" length))
@@ -170,7 +172,7 @@
       ((pointer? matrix)
        (foreign-lambda void "hpmMat4VecArrayMult" c-pointer c-pointer size_t size_t))
       (else (error 'm*vector-array! "Wrong argument type" matrix)))
-     matrix vector length stride))
+     matrix vector length (* stride 4)))
    (else (error 'm*vector-array! "Wrong argument type" vector))))
 
 (define (cross-product ax ay az bx by bz)
