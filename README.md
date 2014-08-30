@@ -210,7 +210,13 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
-### Version 0.4.0
+### Version 0.4.1
+30 August 2014
+
+* Fix `m*vector-array!`
+
+**Version 0.4.0**
+
 27 July 2014
 
 * Add `copy-mat4`
