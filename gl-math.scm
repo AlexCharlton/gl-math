@@ -4,26 +4,25 @@
 (import-for-syntax matchable data-structures)
 (use lolevel srfi-4)
 
-#> #include <hypermath.h>
-<#
+(foreign-declare "#include <hypermath.h>")
 
 (define-syntax bind-matrix-fun
   (ir-macro-transformer
    (lambda (exp rename compare)
      (match exp
-       [(_ name c-name return . vars)
-        (let* ([main-mat (first (last vars))]
-               [other-vars (butlast vars)]
-               [result? (compare main-mat 'result)]
-               [pointer-name (symbol-append 'pointer- (strip-syntax name))]
-               [vector-name (symbol-append 'f32vector- (strip-syntax name))]
-               [types (map second other-vars)]
-               [pointer-types (map (lambda (t)
+       ((_ name c-name return . vars)
+        (let* ((main-mat (first (last vars)))
+               (other-vars (butlast vars))
+               (result? (compare main-mat 'result))
+               (pointer-name (symbol-append 'pointer- (strip-syntax name)))
+               (vector-name (symbol-append 'f32vector- (strip-syntax name)))
+               (types (map second other-vars))
+               (pointer-types (map (lambda (t)
                                      (if (compare t 'f32vector)
                                          'c-pointer
                                          t))
-                                   types)]
-               [vars (map first other-vars)])
+                                   types))
+               (vars (map first other-vars)))
           `(begin
              (define (,vector-name ,@vars
                                    ,@(if result?
@@ -39,11 +38,11 @@
              (define (,name ,@vars ,@(if result? '(#!optional) '())
                             ,main-mat)
                (cond
-                [(pointer? ,main-mat) (,pointer-name ,@vars ,main-mat)]
-                [(f32vector? ,main-mat) (,vector-name ,@vars ,main-mat)]
-                [(boolean? ,main-mat) (,vector-name ,@vars
-                                                    (make-f32vector 16 0 ,main-mat))]
-                [else (error ',name "Wrong argument type" ,main-mat)]))))]))))
+                ((pointer? ,main-mat) (,pointer-name ,@vars ,main-mat))
+                ((f32vector? ,main-mat) (,vector-name ,@vars ,main-mat))
+                ((boolean? ,main-mat) (,vector-name ,@vars
+                                                    (make-f32vector 16 0 ,main-mat)))
+                (else (error ',name "Wrong argument type" ,main-mat)))))))))))
 
 (define (print-mat4 matrix)
   (define (vr i)
@@ -51,19 +50,19 @@
   (define (pr i)
     (pointer-f32-ref (pointer+ matrix (* i 4))))
   (cond
-   [(pointer? matrix)
+   ((pointer? matrix)
     (format #t "[~a ~a ~a ~a~% ~a ~a ~a ~a~% ~a ~a ~a ~a~% ~a ~a ~a ~a]~%"
             (pr 0) (pr 4) (pr 8) (pr 12)
             (pr 1) (pr 5) (pr 9) (pr 13)
             (pr 2) (pr 6) (pr 10) (pr 14)
-            (pr 3) (pr 7) (pr 11) (pr 15))]
-   [[f32vector? matrix]
+            (pr 3) (pr 7) (pr 11) (pr 15)))
+   ((f32vector? matrix)
     (format #t "[~a ~a ~a ~a~% ~a ~a ~a ~a~% ~a ~a ~a ~a~% ~a ~a ~a ~a]~%"
             (vr 0) (vr 4) (vr 8) (vr 12)
             (vr 1) (vr 5) (vr 9) (vr 13)
             (vr 2) (vr 6) (vr 10) (vr 14)
-            (vr 3) (vr 7) (vr 11) (vr 15))]
-   [else (error 'print-mat4 "Wrong argument type" matrix)]))
+            (vr 3) (vr 7) (vr 11) (vr 15)))
+   (else (error 'print-mat4 "Wrong argument type" matrix))))
 
 (bind-matrix-fun copy-mat4 "hpmCopyMat4" void
                  (source f32vector) (result f32vector))
@@ -176,14 +175,14 @@
    (else (error 'm*vector-array! "Wrong argument type" vector))))
 
 (define (cross-product ax ay az bx by bz)
-  (let-location ([rx float] [ry float] [rz float])
+  (let-location ((rx float) (ry float) (rz float))
     ((foreign-lambda void "hpmCross" float float float float float float
                      (c-pointer float) (c-pointer float) (c-pointer float))
      ax ay az bx by bz #$rx #$ry #$rz)
     (values rx ry rz)))
 
 (define (normalize x y z)
-  (let-location ([rx float] [ry float] [rz float])
+  (let-location ((rx float) (ry float) (rz float))
     ((foreign-lambda void "hpmNormalize" float float float
                      (c-pointer float) (c-pointer float) (c-pointer float))
      x y z #$rx #$ry #$rz)
