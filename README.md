@@ -1,5 +1,6 @@
 # gl-math
-A very small math library for gamedev that mostly provides 4x4 float matrix operations. Uses the [hypermath](https://github.com/AlexCharlton/hypermath) library.
+
+A small math library aimed at gamedev that provides 4x4 float matrix, vector, and quaternion operations. Uses the [hypermath](https://github.com/AlexCharlton/hypermath) library.
 
 ## Installation
 This repository is a [Chicken Scheme](http://call-cc.org/) egg.
@@ -22,6 +23,8 @@ gl-math expects matrices to be f32vectors or pointers. f32vectors must be 16 ele
 
 gl-math operates on matrices in a column-major fashion in correspondence with OpenGL (e.g. translation components are at indices 12, 13, and 14).
 
+gl-math expects vectors to be 3 element f32vectors, and quaternions to be 4 element f32vectors which can be created with `make-point` and `make-quaternion` respectively.
+
 ### Matrix operations
     [procedure] (print-mat4 MATRIX)
 
@@ -29,71 +32,71 @@ Prints the given `MATRIX` to `(current-output-port)`.
 
     [procedure] (copy-mat4 MATRIX [RESULT])
 
-Make a copy of `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the contents of `MATRIX`. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+Make a copy of `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the contents of `MATRIX`. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (m* A B [RESULT])
 
-Multiply matrix `A` by matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
+Multiply matrix `A` by matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (mat4-identity [RESULT])
 
-Return an identity matrix. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return an identity matrix. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-    [procedure] (translation X Y Z [RESULT])
-Return the translation matrix given by `X`, `Y`, and `Z`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+    [procedure] (translation VECTOR [RESULT])
+Return the translation matrix given by `VECTOR`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-    [procedure] (translate X Y Z MATRIX)
+    [procedure] (translate VECTOR MATRIX)
 
-Translate `MATRIX` by `X`, `Y`, and `Z`.
+Translate `MATRIX` by `VECTOR`.
 
     void hpmXRotation(float rotation, float *mat);
 Create the rotation matrix of `rotation` radians around the X-axis in the given matrix.
 
     [procedure] (x-rotation ANGLE [RESULT])
-Return the rotation matrix given by a rotation of `ANGLE` radians around the x-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the rotation matrix given by a rotation of `ANGLE` radians around the x-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (rotate-x ANGLE MATRIX)
 
 Rotate `MATRIX` around the x-axis by `ANGLE` radians.
 
     [procedure] (y-rotation ANGLE [RESULT])
-Return the rotation matrix given by a rotation of `ANGLE` radians around the y-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the rotation matrix given by a rotation of `ANGLE` radians around the y-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (rotate-y ANGLE MATRIX)
 
 Rotate `MATRIX` around the y-axis by `ANGLE` radians.
 
     [procedure] (z-rotation ANGLE [RESULT])
-Return the rotation matrix given by a rotation of `ANGLE` radians around the z-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the rotation matrix given by a rotation of `ANGLE` radians around the z-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (rotate-z ANGLE MATRIX)
 
 Rotate `MATRIX` around the z-axis by `ANGLE` radians.
 
-    [procedure] (rotation X Y Z ANGLE [RESULT])
-Return the rotation matrix given by a rotation of `ANGLE` radians around the vector `(X, Y, Z)`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+    [procedure] (axis-angle-rotation AXIS ANGLE [RESULT])
+Return the rotation matrix given by a rotation of `ANGLE` radians around the vector `AXIS`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-    [procedure] (rotate X Y Z ANGLE MATRIX)
+    [procedure] (rotate-axis-angle AXIS ANGLE MATRIX)
 
-Rotate `MATRIX` around the vector `(X, Y, Z)` by `ANGLE` radians.
+Rotate `MATRIX` around the vector `AXIS` by `ANGLE` radians.
 
-    [procedure] (quaternion-rotation X Y Z W [RESULT])
-Return the rotation matrix given by the quaternion `(X, Y, Z, Q)`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+    [procedure] (quaternion-rotation Q [RESULT])
+Return the rotation matrix given by the quaternion `Q`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-    [procedure] (rotate-quaternion X Y Z W MATRIX)
+    [procedure] (rotate-quaternion Q MATRIX)
 
-Rotate `MATRIX` by the quaternion `(X, Y, Z, Q)`.
+Rotate `MATRIX` by the quaternion `Q`.
 
     [procedure] (ypr-rotation YAW PITCH ROLL [RESULT])
-Return the rotation matrix given by rotating by `ROLL` radians followed by `PITCH` radians followed by `YAW` radians. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the rotation matrix given by rotating by `ROLL` radians around the z-axis followed by `PITCH` radians around the x-axis followed by `YAW` radians around the y-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (rotate-ypr YAW PITCH ROLL MATRIX)
 
-Rotate `MATRIX` by `ROLL` radians followed by `PITCH` radians followed by `YAW` radians.
+Rotate `MATRIX` by `ROLL` radians around the z-axis followed by `PITCH` radians around the x-axis followed by `YAW` radians around the y-axis.
 
     [procedure] (2d-scaling SCALE-X SCALE-Y [RESULT])
 
-Return the matrix created by scaling the x and y axes by `SCALE-X` and `SCALE-Y`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the matrix created by scaling the x and y axes by `SCALE-X` and `SCALE-Y`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (scale-2d SCALE-X SCALE-Y MATRIX)
 
@@ -101,7 +104,7 @@ Scale the x and y axis of `MATRIX` by `SCALE-X` and `SCALE-Y`.
 
     [procedure] (3d-scaling SCALE-X SCALE-Y SCALE-Z [RESULT])
 
-Return the matrix created by scaling the x, y and z axes by `SCALE-X`, `SCALE-Y`, and `SCALE-Z`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the matrix created by scaling the x, y and z axes by `SCALE-X`, `SCALE-Y`, and `SCALE-Z`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (scale-3d SCALE-X SCALE-Y SCALE-Z MATRIX)
 
@@ -109,7 +112,7 @@ Scale the x, y, and z axis of `MATRIX` by `SCALE-X`, `SCALE-Y`, and `SCALE-Z`.
 
     [procedure] (scaling SCALE [RESULT])
 
-Return the matrix created by scaling the x, y and z axes by `SCALE`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Return the matrix created by scaling the x, y and z axes by `SCALE`. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (scale SCALE MATRIX)
 
@@ -127,58 +130,167 @@ Flip (mirror) `MATRIX` along the y-axis.
 
 Flip (mirror) `MATRIX` along the z-axis.
 
-    [procedure] (translate-rotate-scale-2d X Y Z ANGLE SCALE [RESULT])
+    [procedure] (translate-rotate-scale-2d VECTOR ANGLE SCALE [RESULT])
 
-Efficiently create a matrix translated by `X`, `Y`, and `Z`, rotated around the z-axis by `ANGLE` radians, then scaled by `SCALE`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Efficiently create a matrix translated by `VECTOR`, rotated around the z-axis by `ANGLE` radians, then scaled by `SCALE`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (transpose MATRIX [RESULT])
 
-Transpose `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+Transpose `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (inverse MATRIX [RESULT])
 
-Invert `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+Invert `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
 
 ### Perspective matrices
     [procedure] (ortho WIDTH HEIGHT NEAR FAR [RESULT])
 
-Create an orthographic projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create an orthographic projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (perspective WIDTH HEIGHT NEAR FAR ANGLE [RESULT])
 
-Create an perspective projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create an perspective projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (frustum LEFT RIGHT BOTTOM TOP NEAR FAR [RESULT])
 
-Create a view-frustum matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create a view-frustum matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
 ### Camera functions
-    [procedure] (look-at EYE-X EYE-Y EYE-Z X Y Z UP-X UP-Y UP-Z [RESULT])
+    [procedure] (look-at EYE OBJ UP [RESULT])
 
-Create a “look-at” style camera matrix. The camera is positioned at `(EYE-X, EYE-Y, EYE-Z)`, pointing towards `(X, Y, Z)`. `(UP-X, UP-Y, UP-Z)` defines the camera’s up vector. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create a “look-at” style camera matrix. The camera is positioned at point `EYE`, pointing towards the point `OBJ`. `UP` defines the camera’s up vector. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (camera-inverse CAMERA [RESULT])
 
-Invert `CAMERA` in an efficient fashion. This allows the camera to be constructed in an intuitive fashion by translating and rotating before inverting in order to position the scene properly. This function is far faster than the general `inverse` function, but the matrix `CAMERA` must only be a matrix representing a translation and a rotation (no scaling). If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `CAMERA` must be an f32vector and the returned value will be an f32vector located in non-garbage collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `CAMERA` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+Invert `CAMERA` in an efficient fashion. This allows the camera to be constructed in an intuitive fashion by translating and rotating before inverting in order to position the scene properly. This function is far faster than the general `inverse` function, but the matrix `CAMERA` must only be a matrix representing a translation and a rotation (no scaling). If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `CAMERA` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `CAMERA` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
 
 ### Vector operations
-    [procedure] (cross-product AX AY AZ BX BY BZ)
+    [procedure] (make-point X Y Z [NON-GC?])
+    [procedure] (point-x POINT)
+    [procedure] (point-y POINT)
+    [procedure] (point-z POINT)
+    [procedure] (point-x-set! POINT)
+    [procedure] (point-y-set! POINT)
+    [procedure] (point-z-set! POINT)
 
-Return the result of the cross product between the vectors `(AX, AY, AZ)` and `(BX, BY, BZ)`. The resulting vector is returned as three values.
+Vector constructor, getters, and setters. If `NON-GC` is `#t`, the point is created in a non-garbage-collected area (the memory will still be freed when there are no more references to the vector). 
 
-    [procedure] (dot-product AX AY AZ BX BY BZ)
+    [procedure] (v+ A B [RESULT])
+ 
+Return the result of the addition of vectors `A` and `B`. If the vector `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-Return the result of the dot product between the vectors `(AX, AY, AZ)` and `(BX, BY, BZ)`.
+    [procedure] (v- A B [RESULT])
+ 
+Return the result of the subtraction of vector `B` from `A`. If the vector `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-    [procedure] (normalize X Y Z)
+    [procedure] (v* V S [RESULT])
+ 
+Return the result of the multiplication of vector `A` with scalar `S`. If the vector `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
-Return the normalized vector `(X, Y, Z)`. The resulting vector is returned as three values.
+    [procedure] (cross-product A B [RESULT])
+ 
+Return the result of the cross product between the vectors `A` and `B`. If the vector `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (dot-product A B)
+
+Return the result of the dot product between the vectors `A` and `B`.
+
+    [procedure] (vector-magnitude V)
+
+Return the magnitude of vector `V`.
+
+    [procedure] (normalize! V)
+
+Destructively normalize the vector `V`.
 
     [procedure] (m*vector! MATRIX VECTOR)
-Destructively multiply the 3 element f32vector `VECTOR` by `MATRIX`.
+
+Destructively multiply `VECTOR` by `MATRIX`.
 
     [procedure] (m*vector-array! MATRIX VECTORS stride: [STRIDE] length: [LENGTH])
+
 Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in number of floats (which must be at least 3). `VECTORS` may be given as an f32vector or a pointer. When given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
+
+    [procedure] (lerp A B T [RESULT])
+
+Linear interpolation between the points `A` and `B` with the interpolation parameter `T` which must be between 0 and 1. If the vector `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+
+### Quaternion operations
+Quaternions are expected to be normalized before they are used in certain functions (`quaternion-normalize` may be used to do so). All the provided functions that create quaternions, create unit quaternions. 
+
+    [procedure] (make-quaternion X Y Z W [NON-GC?])
+    [procedure] (quaternion-x POINT)
+    [procedure] (quaternion-y POINT)
+    [procedure] (quaternion-z POINT)
+    [procedure] (quaternion-w POINT)
+    [procedure] (quaternion-x-set! POINT)
+    [procedure] (quaternion-y-set! POINT)
+    [procedure] (quaternion-z-set! POINT)
+    [procedure] (quaternion-w-set! POINT)
+
+Quaternion constructor, getters, and setters. If `NON-GC` is `#t`, the quaternion is created in a non-garbage-collected area (the memory will still be freed when there are no more references to the quaternion). 
+
+    [procedure] (quaternion-normalize! Q)
+
+Destructively normalize the quaternion `Q`.
+
+    [procedure] (quaternion-inverse Q [RESULT])
+
+Return the inverse of the unit quaternion `Q`. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-cross-product A B [RESULT])
+
+Return the cross-product of the quaternions `A` and `B`. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-axis-angle-rotation AXIS ANGLE [RESULT])
+
+Return the quaternion corresponding to a rotation of `ANGLE` radians around the vector `AXIS`. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-rotate-axis-angle AXIS ANGLE Q)
+
+Rotate the quaternion `Q` by a rotation of `ANGLE` radians around the vector `AXIS`.
+
+    [procedure] (quaternion-x-rotation ANGLE [RESULT])
+
+Return the quaternion corresponding to a rotation of `ANGLE` radians around the x-axis. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-rotate-x ANGLE Q)
+
+Rotate the quaternion `Q` by a rotation of `ANGLE` radians around the x-axis.
+
+    [procedure] (quaternion-y-rotation ANGLE [RESULT])
+
+Return the quaternion corresponding to a rotation of `ANGLE` radians around the y-axis. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-rotate-y ANGLE Q)
+
+Rotate the quaternion `Q` by a rotation of `ANGLE` radians around the y-axis.
+
+    [procedure] (quaternion-z-rotation ANGLE [RESULT])
+
+Return the quaternion corresponding to a rotation of `ANGLE` radians around the z-axis. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-rotate-z ANGLE Q)
+
+Rotate the quaternion `Q` by a rotation of `ANGLE` radians around the z-axis.
+
+    [procedure] (quaternion-ypr-rotation YAW PITCH ROLL [RESULT])
+
+Return the quaternion corresponding to a rotation of `ROLL` radians around the z-axis followed by `PITCH` radians around the x-axis followed by `YAW` radians around the y-axis. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (quaternion-rotate-ypr YAW PITCH ROLL Q)
+
+Rotate the quaternion `Q` by `ROLL` radians around the z-axis followed by `PITCH` radians around the x-axis followed by `YAW` radians around the y-axis.
+
+    [procedure] (quaternion-rotate-point! Q P)
+
+Destructively rotate the point `P` by the unit quaternion `Q`.
+
+    [procedure] (slerp A B T [RESULT])
+
+Spherical linear interpolation between the quaternions `A` and `B` with the interpolation parameter `T` which must be between 0 and 1. If the quaternion `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t` the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
 
 ### Angle operations
     [procedure] (degrees->radians ANGLE)
@@ -188,6 +300,10 @@ Converts `ANGLE` from degrees to radians.
     [procedure] (radians->degrees ANGLE)
 
 Converts `ANGLE` from radians to degrees.
+
+    [constant] pi
+
+    [constant] pi/2
 
 ## Example
 
@@ -199,9 +315,9 @@ Converts `ANGLE` from radians to degrees.
   (perspective 640 480 0.1 100 70))
 
 (define view-matrix
-  (look-at 1 0 3
-           0 0 0
-           0 1 0))
+  (look-at (make-point 1 0 3)
+           (make-point 0 0 0)
+           (make-point 0 1 0)))
 
 (define model-matrix (mat4-identity))
 
