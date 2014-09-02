@@ -209,7 +209,8 @@
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmXQuatRotation"
        float f32vector)
-     angle res)))
+     angle res)
+    res))
 
 (define (quaternion-rotate-x angle q)
   ((foreign-lambda void "hpmRotateQuatX"
@@ -221,7 +222,8 @@
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmYQuatRotation"
        float f32vector)
-     angle res)))
+     angle res)
+    res))
 
 (define (quaternion-rotate-y angle q)
   ((foreign-lambda void "hpmRotateQuatY"
@@ -233,9 +235,10 @@
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmZQuatRotation"
        float f32vector)
-     angle res)))
+     angle res)
+    res))
 
-(define (quaternion-rotate-Z angle q)
+(define (quaternion-rotate-z angle q)
   ((foreign-lambda void "hpmRotateQuatZ"
      float f32vector)
    angle q)
@@ -245,7 +248,8 @@
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmYPRQuatRotation"
        float float float f32vector)
-     yaw pitch roll res)))
+     yaw pitch roll res)
+    res))
 
 (define (quaternion-rotate-ypr yaw pitch roll q)
   ((foreign-lambda void "hpmRotateQuatYPR"
