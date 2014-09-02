@@ -23,7 +23,7 @@ gl-math expects matrices to be f32vectors or pointers. f32vectors must be 16 ele
 
 gl-math operates on matrices in a column-major fashion in correspondence with OpenGL (e.g. translation components are at indices 12, 13, and 14).
 
-gl-math expects vectors to be 3 element f32vectors, and quaternions to be 4 element f32vectors which can be created with `make-point` and `make-quaternion` respectively.
+gl-math expects vectors to be 3 element f32vectors (`(x y z)`), and quaternions to be 4 element f32vectors (`(x y z w)`) which can be created with `make-point` and `make-quaternion` respectively.
 
 ### Matrix operations
     [procedure] (print-mat4 MATRIX)
@@ -218,6 +218,8 @@ Linear interpolation between the points `A` and `B` with the interpolation param
 
 ### Quaternion operations
 Quaternions are expected to be normalized before they are used in certain functions (`quaternion-normalize` may be used to do so). All the provided functions that create quaternions, create unit quaternions. 
+
+The order of quaternion cross-multiplication is the inverse of the “standard” order, so a quaternion that has undergone a series or rotations will represent the same rotation as a marix that has gone through the same series, in the same order.
 
     [procedure] (make-quaternion X Y Z W [NON-GC?])
     [procedure] (quaternion-x POINT)
