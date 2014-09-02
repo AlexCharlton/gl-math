@@ -6,6 +6,238 @@
 
 (foreign-declare "#include <hypermath.h>")
 
+;;; Angle operations
+(define degrees->radians
+  (foreign-lambda float "hpmDegreesToRadians" float))
+
+(define radians->degrees
+  (foreign-lambda float "hpmRadiansToDegrees" float))
+
+(define pi 3.14159265358979)
+(define pi/2 (/ pi 2))
+
+;;; Vector operations
+(define (make-point x y z #!optional non-gc?)
+  (let ((v (make-f32vector 3 0 non-gc?)))
+    (f32vector-set! v 0 x)
+    (f32vector-set! v 1 y)
+    (f32vector-set! v 2 z)
+    v))
+
+(define (point-x p)
+  (f32vector-ref p 0))
+
+(define (point-y p)
+  (f32vector-ref p 1))
+
+(define (point-z p)
+  (f32vector-ref p 2))
+
+(define (point-x-set! p v)
+  (f32vector-set! p 0 v))
+
+(define (point-y-set! p v)
+  (f32vector-set! p 1 v))
+
+(define (point-z-set! p v)
+  (f32vector-set! p 2 v))
+
+(define (m*vector! matrix vector)
+  (cond
+   ((pointer? matrix)
+    ((foreign-lambda void "hpmMat4VecMult" c-pointer f32vector) matrix vector))
+   ((f32vector? matrix)
+    ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
+   (else (error 'm*vector! "Wrong argument type" matrix))))
+
+(define (m*vector-array! matrix vector #!key (stride 0) (length 0))
+  (when (and (< stride 3) (not (zero? stride)))
+    (error 'm*vector-array! "Stride must be at least 3" stride))
+  (cond
+   ((f32vector? vector)
+    ((cond
+      ((f32vector? matrix)
+       (foreign-lambda void "hpmMat4VecArrayMult" f32vector f32vector size_t size_t))
+      ((pointer? matrix)
+       (foreign-lambda void "hpmMat4VecArrayMult" c-pointer f32vector size_t size_t))
+      (else (error 'm*vector-array! "Wrong argument type" matrix)))
+     matrix vector (quotient (f32vector-length vector)
+                             (if (zero? stride) 3 stride))
+     (* stride 4)))
+   ((pointer? vector)
+    (when (< length 1)
+      (error 'm*vector-array! "length must be given (and positive) when vector is a pointer" length))
+    ((cond
+      ((f32vector? matrix)
+       (foreign-lambda void "hpmMat4VecArrayMult" f32vector c-pointer size_t size_t))
+      ((pointer? matrix)
+       (foreign-lambda void "hpmMat4VecArrayMult" c-pointer c-pointer size_t size_t))
+      (else (error 'm*vector-array! "Wrong argument type" matrix)))
+     matrix vector length (* stride 4)))
+   (else (error 'm*vector-array! "Wrong argument type" vector))))
+
+(define (get-result r)
+  (cond
+   ((f32vector? r) r)
+   ((boolean? r) (make-f32vector 3 0 r))
+   (else (error 'vector-operation "Wrong argument type" r))))
+
+(define (cross-product a b #!optional r)
+  (let ((res (get-result r)))
+    ((foreign-lambda void "hpmCross"
+       f32vector f32vector f32vector)
+     a b res)))
+
+(define (v+ a b #!optional r)
+  (let ((res (get-result r)))
+    ((foreign-lambda void "hpmAddVec"
+       f32vector f32vector f32vector)
+     a b res)))
+
+(define (v- a b #!optional r)
+  (let ((res (get-result r)))
+    ((foreign-lambda void "hpmSubVec"
+       f32vector f32vector f32vector)
+     a b res)))
+
+(define (v* v m #!optional r)
+  (let ((res (get-result r)))
+    ((foreign-lambda void "hpmMultVec"
+       f32vector float f32vector)
+     v m res)))
+
+(define vector-magnitude
+  (foreign-lambda float "hpmMagnitude"
+    f32vector))
+
+(define normalize!
+  (foreign-lambda void "hpmNormalize" f32vector))
+
+(define dot-product
+  (foreign-lambda float "hpmDot"
+                  f32vector f32vector))
+
+(define (lerp a b t #!optional r)
+  (let ((res (get-result r)))
+    ((foreign-lambda void "hpmLerp"
+       f32vector f32vector float f32vector)
+     a b t res)))
+
+;;; Quaternion operations
+(define (make-quaternion x y z w #!optional non-gc?)
+  (let ((v (make-f32vector 4 0 non-gc?)))
+    (f32vector-set! v 0 x)
+    (f32vector-set! v 1 y)
+    (f32vector-set! v 2 z)
+    (f32vector-set! v 3 2)
+    v))
+
+(define (quaternion-x q)
+  (f32vector-ref q 0))
+
+(define (quaternion-y q)
+  (f32vector-ref q 1))
+
+(define (quaternion-z q)
+  (f32vector-ref q 2))
+
+(define (quaternion-w q)
+  (f32vector-ref q 3))
+
+(define (quaternion-x-set! q v)
+  (f32vector-set! q 0 v))
+
+(define (quaternion-y-set! q v)
+  (f32vector-set! q 1 v))
+
+(define (quaternion-z-set! q v)
+  (f32vector-set! q 2 v))
+
+(define (quaternion-w-set! q v)
+  (f32vector-set! q 3 v))
+
+(define quaternion-normalize!
+  (foreign-lambda void "hpmQuatNormalize" f32vector))
+
+(define (get-q-result r)
+  (cond
+   ((f32vector? r) r)
+   ((boolean? r) (make-f32vector 4 0 r))
+   (else (error 'vector-operation "Wrong argument type" r))))
+
+(define (quaternion-inverse q #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmQuatInverse" f32vector f32vector)
+     q r)))
+
+(define (quaternion-cross-product a b #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmCross"
+       f32vector f32vector f32vector)
+     a b res)))
+
+(define quaternion-rotate-point!
+  (foreign-lambda void "hpmQuatVecRotate"
+    f32vector f32vector))
+
+(define (quaternion-axis-angle-rotation axis angle #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmAxisAngleQuatRotation"
+       f32vector float f32vector)
+     axis angle res)))
+
+(define quaternion-rotate-axis-angle
+  (foreign-lambda void "hpmRotateQuatAxisAngle"
+       f32vector float f32vector))
+
+(define (quaternion-x-rotation angle #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmXQuatRotation"
+       float f32vector)
+     angle res)))
+
+(define quaternion-rotate-x
+  (foreign-lambda void "hpmRotateQuatX"
+       float f32vector))
+
+(define (quaternion-y-rotation angle #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmYQuatRotation"
+       float f32vector)
+     angle res)))
+
+(define quaternion-rotate-y
+  (foreign-lambda void "hpmRotateQuatY"
+       float f32vector))
+
+(define (quaternion-z-rotation angle #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmZQuatRotation"
+       float f32vector)
+     angle res)))
+
+(define quaternion-rotate-Z
+  (foreign-lambda void "hpmRotateQuatZ"
+       float f32vector))
+
+(define (quaternion-ypr-rotation yaw pitch roll #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmYPRQuatRotation"
+       float float float f32vector)
+     yaw pitch roll res)))
+
+(define quaternion-rotate-ypr
+  (foreign-lambda void "hpmRotateQuatYPR"
+       float float float f32vector))
+
+(define (slerp a b t #!optional r)
+  (let ((res (get-q-result r)))
+    ((foreign-lambda void "hpmSlerp"
+       f32vector f32vector float f32vector)
+     a b t res)))
+
+
+;;; Matrix operations
 (define-syntax bind-matrix-fun
   (ir-macro-transformer
    (lambda (exp rename compare)
@@ -71,9 +303,9 @@
 (bind-matrix-fun mat4-identity "hpmIdentityMat4" void
                  (result f32vector))
 (bind-matrix-fun translation "hpmTranslation" void
-                 (x float) (y float) (z float) (result f32vector))
+                 (v f32vector) (result f32vector))
 (bind-matrix-fun translate "hpmTranslate" void
-                 (x float) (y float) (z float) (matrix f32vector))
+                 (v f32vector) (matrix f32vector))
 (bind-matrix-fun x-rotation "hpmXRotation" void
                  (rotation float) (result f32vector))
 (bind-matrix-fun rotate-x "hpmRotateX" void
@@ -86,14 +318,14 @@
                  (rotation float) (result f32vector))
 (bind-matrix-fun rotate-z "hpmRotateZ" void
                  (rotation float) (matrix f32vector))
-(bind-matrix-fun rotation "hpmRotation" void
-                 (x float) (y float) (z float) (angle float) (result f32vector))
-(bind-matrix-fun rotate "hpmRotate" void
-                 (x float) (y float) (z float) (angle float) (matrix f32vector))
+(bind-matrix-fun axis-angle-rotation "hpmAxisAngleRotation" void
+                 (axis f32vector) (angle float) (result f32vector))
+(bind-matrix-fun rotate-axis-angle "hpmRotateAxisAngle" void
+                 (axis f32vector) (angle float) (matrix f32vector))
 (bind-matrix-fun quaternion-rotation "hpmQuaternionRotation" void
-                 (x float) (y float) (z float) (w float) (result f32vector))
+                 (q f32vector) (result f32vector))
 (bind-matrix-fun rotate-quaternion "hpmRotateQuaternion" void
-                 (x float) (y float) (z float) (w float) (matrix f32vector))
+                 (q f32vector) (matrix f32vector))
 (bind-matrix-fun ypr-rotation "hpmYPRRotation" void
                  (yaw float) (pitch float) (roll float) (result f32vector))
 (bind-matrix-fun rotate-ypr "hpmRotateYPR" void
@@ -115,7 +347,7 @@
 (bind-matrix-fun flip-z "hpmFlipZ" void
                  (matrix f32vector))
 (bind-matrix-fun translate-rotate-scale-2d "hpmTranslateRotateScale2D" void
-                 (x float) (y float) (z float) (rotate float) (scale float) 
+                 (v f32vector) (rotate float) (scale float) 
                  (result f32vector))
 (bind-matrix-fun transpose "hpmTranspose" void
                  (matrix f32vector) (result f32vector))
@@ -132,73 +364,10 @@
                  (width int) (height int) (near float) (far float) (fov-angle float)
                  (result f32vector))
 (bind-matrix-fun look-at "hpmLookAt" void
-                 (eye-x float) (eye-y float) (eye-z float)
-                 (x float) (y float) (z float)
-                 (up-x float) (up-y float) (up-z float)
+                 (eye f32vector) (obj f32vector) (up f32vector)
                  (result f32vector))
 (bind-matrix-fun camera-inverse "hpmCameraInverse" void
                  (camera f32vector)
                  (result f32vector))
-
-(define (m*vector! matrix vector)
-  (cond
-   ((pointer? matrix)
-    ((foreign-lambda void "hpmMat4VecMult" c-pointer f32vector) matrix vector))
-   ((f32vector? matrix)
-    ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
-   (else (error 'm*vector! "Wrong argument type" matrix))))
-
-(define (m*vector-array! matrix vector #!key (stride 0) (length 0))
-  (when (and (< stride 3) (not (zero? stride)))
-    (error 'm*vector-array! "Stride must be at least 3" stride))
-  (cond
-   ((f32vector? vector)
-    ((cond
-      ((f32vector? matrix)
-       (foreign-lambda void "hpmMat4VecArrayMult" f32vector f32vector size_t size_t))
-      ((pointer? matrix)
-       (foreign-lambda void "hpmMat4VecArrayMult" c-pointer f32vector size_t size_t))
-      (else (error 'm*vector-array! "Wrong argument type" matrix)))
-     matrix vector (quotient (f32vector-length vector)
-                             (if (zero? stride) 3 stride))
-     (* stride 4)))
-   ((pointer? vector)
-    (when (< length 1)
-      (error 'm*vector-array! "length must be given (and positive) when vector is a pointer" length))
-    ((cond
-      ((f32vector? matrix)
-       (foreign-lambda void "hpmMat4VecArrayMult" f32vector c-pointer size_t size_t))
-      ((pointer? matrix)
-       (foreign-lambda void "hpmMat4VecArrayMult" c-pointer c-pointer size_t size_t))
-      (else (error 'm*vector-array! "Wrong argument type" matrix)))
-     matrix vector length (* stride 4)))
-   (else (error 'm*vector-array! "Wrong argument type" vector))))
-
-(define (cross-product ax ay az bx by bz)
-  (let-location ((rx float) (ry float) (rz float))
-    ((foreign-lambda void "hpmCross" float float float float float float
-                     (c-pointer float) (c-pointer float) (c-pointer float))
-     ax ay az bx by bz #$rx #$ry #$rz)
-    (values rx ry rz)))
-
-(define (normalize x y z)
-  (let-location ((rx float) (ry float) (rz float))
-    ((foreign-lambda void "hpmNormalize" float float float
-                     (c-pointer float) (c-pointer float) (c-pointer float))
-     x y z #$rx #$ry #$rz)
-    (values rx ry rz)))
-
-(define dot-product
-  (foreign-lambda float "hpmDot"
-                  float float float float float float))
-
-(define degrees->radians
-  (foreign-lambda float "hpmDegreesToRadians" float))
-
-(define radians->degrees
-  (foreign-lambda float "hpmRadiansToDegrees" float))
-
-(define pi 3.14159265358979)
-(define pi/2 (/ pi 2))
 
 ) ; module end
