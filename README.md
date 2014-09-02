@@ -327,6 +327,13 @@ Converts `ANGLE` from radians to degrees.
 
 ## Version history
 ### Version 0.4.1
+### Version 0.5.0
+2 September 2014
+
+* Many new vector and quaternion functions
+* Functions that previously accepted vectors as individual floats, now accept them as f32vectors
+
+### Version 0.4.1
 30 August 2014
 
 * Fix `m*vector-array!`
