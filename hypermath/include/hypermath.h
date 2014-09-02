@@ -24,6 +24,8 @@ float hpmRadiansToDegrees(float rad);
 // Vector operations
 void hpmCopyVec(const float *source, float *dest);
 
+void hpmMultVec(const float *pointA, float m, float *result);
+
 void hpmAddVec(const float *pointA, const float *pointB, float *result);
 
 void hpmSubVec(const float *pointA, const float *pointB, float *result);
@@ -32,13 +34,16 @@ void hpmCross(const float *pointA, const float *pointB, float *result);
 
 float hpmMagnitude(const float *point);
 
-void hpmNormalize(const float *point, float *result);
+void hpmNormalize(float *point);
 
 float hpmDot(const float *pointA, const float *pointB);
+
+void hpmLerp(const float *pointA, const float *pointB, float t, float *result);
 
 void hpmMat4VecMult(const float *mat, float *point);
 
 void hpmMat4VecArrayMult(const float *mat, float *vec, size_t length, size_t stride);
+
 
 // Quaternion operations
 void hpmCopyQuat(const float *source, float *dest);
@@ -47,7 +52,7 @@ void hpmQuatNormalize(float *quat);
 
 void hpmQuatInverse(const float *quat, float *inv);
 
-void hpmMultQuat(const float *quatA, const float *quatB, float *result);
+void hpmQuatCross(const float *quatA, const float *quatB, float *result);
 
 void hpmQuatVecRotate(const float *quat, float *point);
 
@@ -144,7 +149,7 @@ void hpmPerspective(int width, int height, float near, float far, float angle,
 		    float *mat);
 
 // Camera
-void hpmLookAt(float *eye, float *cam, float *up, float *mat);
+void hpmLookAt(float *eye, float *obj, float *up, float *mat);
 
 void hpmCameraInverse(const float *camera, float *inverse);
 

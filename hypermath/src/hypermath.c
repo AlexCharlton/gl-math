@@ -18,22 +18,30 @@ void hpmCopyVec(const float *source, float *dest){
     memcpy(dest, source, sizeof(float) * 3);
 }
 
+void hpmMultVec(const float *pointA, float m, float *result){
+    HPMpoint *a = (HPMpoint *) pointA;
+    HPMpoint *r = (HPMpoint *) result;
+    r->x = a->x * m;
+    r->y = a->y * m;
+    r->z = a->z * m;
+}
+
 void hpmAddVec(const float *pointA, const float *pointB, float *result){
     HPMpoint *a = (HPMpoint *) pointA;
     HPMpoint *b = (HPMpoint *) pointB;
     HPMpoint *r = (HPMpoint *) result;
-    r->x = a->y + b->z;
-    r->y = a->z + b->x;
-    r->z = a->x + b->y;
+    r->x = a->x + b->x;
+    r->y = a->y + b->y;
+    r->z = a->z + b->z;
 }
 
 void hpmSubVec(const float *pointA, const float *pointB, float *result){
     HPMpoint *a = (HPMpoint *) pointA;
     HPMpoint *b = (HPMpoint *) pointB;
     HPMpoint *r = (HPMpoint *) result;
-    r->x = a->y - b->z;
-    r->y = a->z - b->x;
-    r->z = a->x - b->y;
+    r->x = a->x - b->x;
+    r->y = a->y - b->y;
+    r->z = a->z - b->z;
 }
 
 void hpmCross(const float *pointA, const float *pointB, float *result){
@@ -50,13 +58,12 @@ float hpmMagnitude(const float *point){
     return sqrt(p->x*p->x + p->y*p->y + p->z*p->z);
 }
 
-void hpmNormalize(const float *point, float *result){
+void hpmNormalize(float *point){
     HPMpoint *p = (HPMpoint *) point;
-    HPMpoint *r = (HPMpoint *) result;
     float len = hpmMagnitude(point);
-    r->x = p->x / len;
-    r->y = p->y / len;
-    r->z = p->z / len;
+    p->x = p->x / len;
+    p->y = p->y / len;
+    p->z = p->z / len;
 }
 
 float hpmDot(const float *pointA, const float *pointB){
@@ -84,6 +91,15 @@ void hpmMat4VecArrayMult(const float *mat, float *vec, size_t length, size_t str
     }
 }
 
+void hpmLerp(const float *pointA, const float *pointB, float t, float *result){
+    HPMpoint *a = (HPMpoint *) pointA;
+    HPMpoint *b = (HPMpoint *) pointB;
+    HPMpoint *r = (HPMpoint *) result;
+    float t0 = 1 - t;
+    r->x = a->x*t0 + b->x*t;
+    r->y = a->y*t0 + b->y*t;
+    r->z = a->z*t0 + b->z*t;
+}
 
 // Quaternion operations
 void hpmCopyQuat(const float *source, float *dest){
@@ -93,10 +109,10 @@ void hpmCopyQuat(const float *source, float *dest){
 void hpmQuatNormalize(float *quat){
     HPMquat *q = (HPMquat *) quat;
     float mag = sqrt(q->x*q->x + q->y*q->y + q->z*q->z + q->w*q->w);
-    q->x = -q->x / mag;
-    q->y = -q->y / mag;
-    q->z = -q->z / mag;
-    q->w =  q->w / mag;
+    q->x = q->x / mag;
+    q->y = q->y / mag;
+    q->z = q->z / mag;
+    q->w = q->w / mag;
 }
 
 void hpmQuatInverse(const float *quat, float *inv){
@@ -108,7 +124,7 @@ void hpmQuatInverse(const float *quat, float *inv){
     i->w = q->w;
 }
 
-void hpmMultQuat(const float *quatA, const float *quatB, float *result){
+void hpmQuatCross(const float *quatA, const float *quatB, float *result){
     HPMquat *a = (HPMquat *) quatA;
     HPMquat *b = (HPMquat *) quatB;
     HPMquat *r = (HPMquat *) result;
@@ -127,8 +143,8 @@ void hpmQuatVecRotate(const float *quat, float *point){
     p.z = pt->z;
     p.w = 0;
     hpmQuatInverse(quat, i);
-    hpmMultQuat((float *) &p, i, r);
-    hpmMultQuat(quat, r, i);
+    hpmQuatCross((float *) &p, i, r);
+    hpmQuatCross(quat, r, i);
     pt->x = i[0];
     pt->y = i[1];
     pt->z = i[2];
@@ -147,7 +163,7 @@ void hpmAxisAngleQuatRotation(float *axis, float angle, float *quat){
 void hpmRotateQuatAxisAngle(float *axis, float angle, float *quat){
     float rot[4], r[4];
     hpmAxisAngleQuatRotation(axis, angle, rot);
-    hpmMultQuat(rot, quat, r);
+    hpmQuatCross(rot, quat, r);
     hpmCopyQuat(r, quat);
 }
 
@@ -161,7 +177,7 @@ void hpmRotateQuatX(float angle, float *quat){
     if (angle == 0.0) return;
     float rot[4], r[4];
     hpmXQuatRotation(angle, rot);
-    hpmMultQuat(rot, quat, r);
+    hpmQuatCross(rot, quat, r);
     hpmCopyQuat(r, quat);
 }
 
@@ -175,7 +191,7 @@ void hpmRotateQuatY(float angle, float *quat){
     if (angle == 0.0) return;
     float rot[4], r[4];
     hpmYQuatRotation(angle, rot);
-    hpmMultQuat(rot, quat, r);
+    hpmQuatCross(rot, quat, r);
     hpmCopyQuat(r, quat);
 }
 
@@ -189,7 +205,7 @@ void hpmRotateQuatZ(float angle, float *quat){
     if (angle == 0.0) return;
     float rot[4], r[4];
     hpmZQuatRotation(angle, rot);
-    hpmMultQuat(rot, quat, r);
+    hpmQuatCross(rot, quat, r);
     hpmCopyQuat(r, quat);
 }
 
@@ -202,7 +218,7 @@ void hpmYPRQuatRotation(float yaw, float pitch, float roll, float *quat){
 void hpmRotateQuatYPR(float yaw, float pitch, float roll, float *quat){
     float rot[4], r[4];
     hpmYPRQuatRotation(yaw, pitch, roll, rot);
-    hpmMultQuat(rot, quat, r);
+    hpmQuatCross(rot, quat, r);
     hpmCopyQuat(r, quat);
 }
 
@@ -374,7 +390,7 @@ void hpmAxisAngleRotation(float *axis, float angle, float *mat){
     float s = sin(angle);
     float C = 1 - c;
     float xx, xy, xz, yy, yz, zz, xs, ys, zs;
-    hpmNormalize(axis, axis);
+    hpmNormalize(axis);
     xx = a->x * a->x;
     xy = a->x * a->y;
     xz = a->x * a->z;
@@ -748,14 +764,14 @@ void hpmPerspective(int width, int height, float near, float far, float angle,
 }
 
 // Camera
-void hpmLookAt(float *eye, float *cam, float *up, float *mat){
+void hpmLookAt(float *eye, float *obj, float *up, float *mat){
     HPMmat4 *m = (HPMmat4 *) mat;
     HPMpoint f, r, u;
     initMat4(m);
-    hpmSubVec(eye, cam, (float *) &f);
-    hpmNormalize((float *) &f, (float *) &f);
+    hpmSubVec(eye, obj, (float *) &f);
+    hpmNormalize((float *) &f);
     hpmCross(up, (float *) &f, (float *) &r);
-    hpmNormalize((float *) &r, (float *) &r);
+    hpmNormalize((float *) &r);
     hpmCross((float *) &f, (float *) &r, (float *) &u);
 
     m->_11 = r.x;
