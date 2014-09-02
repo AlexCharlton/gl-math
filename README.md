@@ -19,11 +19,9 @@ gl-math provides a number of functions for working with 4x4 matrices (plus a han
 
 Additionally, gl-math is one fifth the compiled size of glm, has a more straight-forward code-base, and complete documentation.
 
-gl-math expects matrices to be f32vectors or pointers. f32vectors must be 16 elements long. The memory pointed to should likewise be an array of 16 floats. If a function accepts more than one matrix, all matrices must be of the same type.
+gl-math expects matrices, vectors, and quaternions to be f32vectors or pointers. f32vectors must be 16 elements long, 3 elements long, or 4 elements long for matrices, vectors, or quaternions, respectively. The memory pointed to should likewise be an array of 16, 3, or 4 floats . If a function accepts more than one matrix, vector, or quaternion, all must be of the same type.
 
-gl-math operates on matrices in a column-major fashion in correspondence with OpenGL (e.g. translation components are at indices 12, 13, and 14).
-
-gl-math expects vectors to be 3 element f32vectors (`(x y z)`), and quaternions to be 4 element f32vectors (`(x y z w)`) which can be created with `make-point` and `make-quaternion` respectively.
+gl-math operates on matrices in a column-major fashion in correspondence with OpenGL (e.g. translation components are at indices 12, 13, and 14). Vectors are arranged as (`(x y z)`), and quaternions as (`(x y z w)`).
 
 ### Matrix operations
     [procedure] (print-mat4 MATRIX)
