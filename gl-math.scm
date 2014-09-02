@@ -48,7 +48,8 @@
     ((foreign-lambda void "hpmMat4VecMult" c-pointer f32vector) matrix vector))
    ((f32vector? matrix)
     ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
-   (else (error 'm*vector! "Wrong argument type" matrix))))
+   (else (error 'm*vector! "Wrong argument type" matrix)))
+  vector)
 
 (define (m*vector-array! matrix vector #!key (stride 0) (length 0))
   (when (and (< stride 3) (not (zero? stride)))
@@ -74,7 +75,8 @@
        (foreign-lambda void "hpmMat4VecArrayMult" c-pointer c-pointer size_t size_t))
       (else (error 'm*vector-array! "Wrong argument type" matrix)))
      matrix vector length (* stride 4)))
-   (else (error 'm*vector-array! "Wrong argument type" vector))))
+   (else (error 'm*vector-array! "Wrong argument type" vector)))
+  vector)
 
 (define (get-result r)
   (cond
