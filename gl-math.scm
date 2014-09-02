@@ -86,32 +86,37 @@
   (let ((res (get-result r)))
     ((foreign-lambda void "hpmCross"
        f32vector f32vector f32vector)
-     a b res)))
+     a b res)
+    res))
 
 (define (v+ a b #!optional r)
   (let ((res (get-result r)))
     ((foreign-lambda void "hpmAddVec"
        f32vector f32vector f32vector)
-     a b res)))
+     a b res)
+    res))
 
 (define (v- a b #!optional r)
   (let ((res (get-result r)))
     ((foreign-lambda void "hpmSubVec"
        f32vector f32vector f32vector)
-     a b res)))
+     a b res)
+    res))
 
 (define (v* v m #!optional r)
   (let ((res (get-result r)))
     ((foreign-lambda void "hpmMultVec"
        f32vector float f32vector)
-     v m res)))
+     v m res)
+    res))
 
 (define vector-magnitude
   (foreign-lambda float "hpmMagnitude"
     f32vector))
 
-(define normalize!
-  (foreign-lambda void "hpmNormalize" f32vector))
+(define (normalize! v)
+  ((foreign-lambda void "hpmNormalize" f32vector) v)
+  v)
 
 (define dot-product
   (foreign-lambda float "hpmDot"
@@ -121,7 +126,8 @@
   (let ((res (get-result r)))
     ((foreign-lambda void "hpmLerp"
        f32vector f32vector float f32vector)
-     a b t res)))
+     a b t res)
+    res))
 
 ;;; Quaternion operations
 (define (make-quaternion x y z w #!optional non-gc?)
@@ -168,27 +174,34 @@
 (define (quaternion-inverse q #!optional r)
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmQuatInverse" f32vector f32vector)
-     q r)))
+     q r)
+    res))
 
 (define (quaternion-cross-product a b #!optional r)
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmCross"
        f32vector f32vector f32vector)
-     a b res)))
+     a b res)
+    res))
 
-(define quaternion-rotate-point!
-  (foreign-lambda void "hpmQuatVecRotate"
-    f32vector f32vector))
+(define (quaternion-rotate-point! q p)
+  ((foreign-lambda void "hpmQuatVecRotate"
+     f32vector f32vector)
+   q p)
+  p)
 
 (define (quaternion-axis-angle-rotation axis angle #!optional r)
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmAxisAngleQuatRotation"
        f32vector float f32vector)
-     axis angle res)))
+     axis angle res)
+    res))
 
-(define quaternion-rotate-axis-angle
-  (foreign-lambda void "hpmRotateQuatAxisAngle"
-       f32vector float f32vector))
+(define (quaternion-rotate-axis-angle axis angle q)
+  ((foreign-lambda void "hpmRotateQuatAxisAngle"
+     f32vector float f32vector)
+   axis angle q)
+  q)
 
 (define (quaternion-x-rotation angle #!optional r)
   (let ((res (get-q-result r)))
@@ -196,9 +209,11 @@
        float f32vector)
      angle res)))
 
-(define quaternion-rotate-x
-  (foreign-lambda void "hpmRotateQuatX"
-       float f32vector))
+(define (quaternion-rotate-x angle q)
+  ((foreign-lambda void "hpmRotateQuatX"
+     float f32vector)
+   angle q)
+  q)
 
 (define (quaternion-y-rotation angle #!optional r)
   (let ((res (get-q-result r)))
@@ -206,9 +221,11 @@
        float f32vector)
      angle res)))
 
-(define quaternion-rotate-y
-  (foreign-lambda void "hpmRotateQuatY"
-       float f32vector))
+(define (quaternion-rotate-y angle q)
+  ((foreign-lambda void "hpmRotateQuatY"
+     float f32vector)
+   angle q)
+  q)
 
 (define (quaternion-z-rotation angle #!optional r)
   (let ((res (get-q-result r)))
@@ -216,9 +233,11 @@
        float f32vector)
      angle res)))
 
-(define quaternion-rotate-Z
-  (foreign-lambda void "hpmRotateQuatZ"
-       float f32vector))
+(define (quaternion-rotate-Z angle q)
+  ((foreign-lambda void "hpmRotateQuatZ"
+     float f32vector)
+   angle q)
+  q)
 
 (define (quaternion-ypr-rotation yaw pitch roll #!optional r)
   (let ((res (get-q-result r)))
@@ -226,15 +245,18 @@
        float float float f32vector)
      yaw pitch roll res)))
 
-(define quaternion-rotate-ypr
-  (foreign-lambda void "hpmRotateQuatYPR"
-       float float float f32vector))
+(define (quaternion-rotate-ypr yaw pitch roll q)
+  ((foreign-lambda void "hpmRotateQuatYPR"
+     float float float f32vector)
+   yaw pitch roll q)
+  q)
 
 (define (slerp a b t #!optional r)
   (let ((res (get-q-result r)))
     ((foreign-lambda void "hpmSlerp"
        f32vector f32vector float f32vector)
-     a b t res)))
+     a b t res)
+    res))
 
 
 ;;; Matrix operations
