@@ -47,9 +47,6 @@ Return the translation matrix given by `VECTOR`. If `RESULT` is `#t`, the return
 
 Translate `MATRIX` by `VECTOR`.
 
-    void hpmXRotation(float rotation, float *mat);
-Create the rotation matrix of `rotation` radians around the X-axis in the given matrix.
-
     [procedure] (x-rotation ANGLE [RESULT])
 Return the rotation matrix given by a rotation of `ANGLE` radians around the x-axis. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
@@ -302,7 +299,6 @@ Converts `ANGLE` from degrees to radians.
 Converts `ANGLE` from radians to degrees.
 
     [constant] pi
-
     [constant] pi/2
 
 ## Example
@@ -326,7 +322,6 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
-### Version 0.4.1
 ### Version 0.5.0
 2 September 2014
 
