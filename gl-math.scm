@@ -6,6 +6,48 @@
 
 (foreign-declare "#include <hypermath.h>")
 
+(define-syntax bind-math-fun
+  (ir-macro-transformer
+   (lambda (exp rename compare)
+     (match exp
+       ((_ name c-name return . vars)
+        (let* ((main-mat (first (last vars)))
+               (other-vars (butlast vars))
+               (result? (compare main-mat 'result))
+               (pointer-name (symbol-append 'pointer- (strip-syntax name)))
+               (vector-name (symbol-append 'f32vector- (strip-syntax name)))
+               (types (map second other-vars))
+               (ret (if (compare return 'void)
+                        (list main-mat)
+                        '()))
+               (pointer-types (map (lambda (t)
+                                     (if (compare t 'f32vector)
+                                         'c-pointer
+                                         t))
+                                   types))
+               (vars (map first other-vars)))
+          `(begin
+             (define (,vector-name ,@vars
+                                   ,@(if result?
+                                         `(#!optional (,main-mat (make-f32vector 16)))
+                                         `(,main-mat)))
+               ((foreign-lambda ,return ,c-name ,@types f32vector)
+                ,@vars ,main-mat)
+               ,@ret)
+             (define (,pointer-name ,@vars ,main-mat)
+               ((foreign-lambda ,return ,c-name ,@pointer-types c-pointer)
+                ,@vars ,main-mat)
+               ,@ret)
+             (define (,name ,@vars ,@(if result? '(#!optional) '())
+                            ,main-mat)
+               (cond
+                ((pointer? ,main-mat) (,pointer-name ,@vars ,main-mat))
+                ((f32vector? ,main-mat) (,vector-name ,@vars ,main-mat))
+                ((boolean? ,main-mat) (,vector-name ,@vars
+                                                    (make-f32vector 16 0 ,main-mat)))
+                (else (error ',name "Wrong argument type" ,main-mat)))))))))))
+
+
 ;;; Angle operations
 (define degrees->radians
   (foreign-lambda float "hpmDegreesToRadians" float))
@@ -78,58 +120,29 @@
    (else (error 'm*vector-array! "Wrong argument type" vector)))
   vector)
 
-(define (get-result r)
-  (cond
-   ((f32vector? r) r)
-   ((boolean? r) (make-f32vector 3 0 r))
-   (else (error 'vector-operation "Wrong argument type" r))))
+(bind-math-fun cross-product "hpmCross" void
+               (a f32vector) (b f32vector) (result f32vector))
 
-(define (cross-product a b #!optional r)
-  (let ((res (get-result r)))
-    ((foreign-lambda void "hpmCross"
-       f32vector f32vector f32vector)
-     a b res)
-    res))
+(bind-math-fun v+ "hpmAddVec" void
+               (a f32vector) (b f32vector) (result f32vector))
 
-(define (v+ a b #!optional r)
-  (let ((res (get-result r)))
-    ((foreign-lambda void "hpmAddVec"
-       f32vector f32vector f32vector)
-     a b res)
-    res))
+(bind-math-fun v- "hpmSubVec" void
+               (a f32vector) (b f32vector) (result f32vector))
 
-(define (v- a b #!optional r)
-  (let ((res (get-result r)))
-    ((foreign-lambda void "hpmSubVec"
-       f32vector f32vector f32vector)
-     a b res)
-    res))
+(bind-math-fun v* "hpmMultVec" void
+               (v f32vector) (s float) (result f32vector))
 
-(define (v* v m #!optional r)
-  (let ((res (get-result r)))
-    ((foreign-lambda void "hpmMultVec"
-       f32vector float f32vector)
-     v m res)
-    res))
+(bind-math-fun vector-magnitude "hpmMagnitude" float
+               (v f32vector))
 
-(define vector-magnitude
-  (foreign-lambda float "hpmMagnitude"
-    f32vector))
+(bind-math-fun normalize! "hpmNormalize" void
+               (v f32vector))
 
-(define (normalize! v)
-  ((foreign-lambda void "hpmNormalize" f32vector) v)
-  v)
+(bind-math-fun dot-product "hpmDot" float
+               (a f32vector) (b f32vector))
 
-(define dot-product
-  (foreign-lambda float "hpmDot"
-                  f32vector f32vector))
-
-(define (lerp a b t #!optional r)
-  (let ((res (get-result r)))
-    ((foreign-lambda void "hpmLerp"
-       f32vector f32vector float f32vector)
-     a b t res)
-    res))
+(bind-math-fun lerp "hpmLerp" void
+               (a f32vector) (b f32vector) (t float) (result f32vector))
 
 ;;; Quaternion operations
 (define (make-quaternion x y z w #!optional non-gc?)
@@ -164,146 +177,53 @@
 (define (quaternion-w-set! q v)
   (f32vector-set! q 3 v))
 
-(define quaternion-normalize!
-  (foreign-lambda void "hpmQuatNormalize" f32vector))
+(bind-math-fun quaternion-normalize! "hpmQuatNormalize" void
+               (q f32vector))
 
-(define (get-q-result r)
-  (cond
-   ((f32vector? r) r)
-   ((boolean? r) (make-f32vector 4 0 r))
-   (else (error 'vector-operation "Wrong argument type" r))))
+(bind-math-fun quaternion-inverse "hpmQuatInverse" void
+               (q f32vector) (result f32vector))
 
-(define (quaternion-inverse q #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmQuatInverse" f32vector f32vector)
-     q r)
-    res))
+(bind-math-fun quaternion-cross-product "hpmQuatCross" void
+               (a f32vector) (b f32vector) (result f32vector))
 
-(define (quaternion-cross-product a b #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmCross"
-       f32vector f32vector f32vector)
-     a b res)
-    res))
+(bind-math-fun quaternion-rotate-point! "hpmQuatVecRotate" void
+               (q f32vector) (p f32vector))
 
-(define (quaternion-rotate-point! q p)
-  ((foreign-lambda void "hpmQuatVecRotate"
-     f32vector f32vector)
-   q p)
-  p)
+(bind-math-fun quaternion-axis-angle-rotation "hpmAxisAngleQuatRotation" void
+               (axis f32vector) (angle float) (result f32vector))
 
-(define (quaternion-axis-angle-rotation axis angle #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmAxisAngleQuatRotation"
-       f32vector float f32vector)
-     axis angle res)
-    res))
+(bind-math-fun quaternion-rotate-axis-angle "hpmRotateQuatAxisAngle" void
+               (axis f32vector) (angle float) (q f32vector))
 
-(define (quaternion-rotate-axis-angle axis angle q)
-  ((foreign-lambda void "hpmRotateQuatAxisAngle"
-     f32vector float f32vector)
-   axis angle q)
-  q)
+(bind-math-fun quaternion-x-rotation "hpmXQuatRotation" void
+               (angle float) (result f32vector))
 
-(define (quaternion-x-rotation angle #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmXQuatRotation"
-       float f32vector)
-     angle res)
-    res))
+(bind-math-fun quaternion-rotate-x "hpmRotateQuatX" void
+               (angle float) (q f32vector))
 
-(define (quaternion-rotate-x angle q)
-  ((foreign-lambda void "hpmRotateQuatX"
-     float f32vector)
-   angle q)
-  q)
+(bind-math-fun quaternion-y-rotation "hpmYQuatRotation" void
+               (angle float) (result f32vector))
 
-(define (quaternion-y-rotation angle #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmYQuatRotation"
-       float f32vector)
-     angle res)
-    res))
+(bind-math-fun quaternion-rotate-y "hpmRotateQuatY" void
+               (angle float) (q f32vector))
 
-(define (quaternion-rotate-y angle q)
-  ((foreign-lambda void "hpmRotateQuatY"
-     float f32vector)
-   angle q)
-  q)
+(bind-math-fun quaternion-z-rotation "hpmZQuatRotation" void
+               (angle float) (result f32vector))
 
-(define (quaternion-z-rotation angle #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmZQuatRotation"
-       float f32vector)
-     angle res)
-    res))
+(bind-math-fun quaternion-rotate-z "hpmRotateQuatZ" void
+               (angle float) (q f32vector))
 
-(define (quaternion-rotate-z angle q)
-  ((foreign-lambda void "hpmRotateQuatZ"
-     float f32vector)
-   angle q)
-  q)
+(bind-math-fun quaternion-ypr-rotation "hpmYPRQuatRotation" void
+               (yaw float) (pitch float) (roll float) (result f32vector))
 
-(define (quaternion-ypr-rotation yaw pitch roll #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmYPRQuatRotation"
-       float float float f32vector)
-     yaw pitch roll res)
-    res))
+(bind-math-fun quaternion-rotate-ypr "hpmRotateQuatYPR" void
+               (yaw float) (pitch float) (roll float) (q f32vector))
 
-(define (quaternion-rotate-ypr yaw pitch roll q)
-  ((foreign-lambda void "hpmRotateQuatYPR"
-     float float float f32vector)
-   yaw pitch roll q)
-  q)
-
-(define (slerp a b t #!optional r)
-  (let ((res (get-q-result r)))
-    ((foreign-lambda void "hpmSlerp"
-       f32vector f32vector float f32vector)
-     a b t res)
-    res))
+(bind-math-fun slerp "hpmSlerp" void
+               (a f32vector) (b f32vector) (t float) (result f32vector))
 
 
 ;;; Matrix operations
-(define-syntax bind-matrix-fun
-  (ir-macro-transformer
-   (lambda (exp rename compare)
-     (match exp
-       ((_ name c-name return . vars)
-        (let* ((main-mat (first (last vars)))
-               (other-vars (butlast vars))
-               (result? (compare main-mat 'result))
-               (pointer-name (symbol-append 'pointer- (strip-syntax name)))
-               (vector-name (symbol-append 'f32vector- (strip-syntax name)))
-               (types (map second other-vars))
-               (pointer-types (map (lambda (t)
-                                     (if (compare t 'f32vector)
-                                         'c-pointer
-                                         t))
-                                   types))
-               (vars (map first other-vars)))
-          `(begin
-             (define (,vector-name ,@vars
-                                   ,@(if result?
-                                         `(#!optional (,main-mat (make-f32vector 16)))
-                                         `(,main-mat)))
-               ((foreign-lambda ,return ,c-name ,@types f32vector)
-                ,@vars ,main-mat)
-               ,main-mat)
-             (define (,pointer-name ,@vars ,main-mat)
-               ((foreign-lambda ,return ,c-name ,@pointer-types c-pointer)
-                ,@vars ,main-mat)
-               ,main-mat)
-             (define (,name ,@vars ,@(if result? '(#!optional) '())
-                            ,main-mat)
-               (cond
-                ((pointer? ,main-mat) (,pointer-name ,@vars ,main-mat))
-                ((f32vector? ,main-mat) (,vector-name ,@vars ,main-mat))
-                ((boolean? ,main-mat) (,vector-name ,@vars
-                                                    (make-f32vector 16 0 ,main-mat)))
-                (else (error ',name "Wrong argument type" ,main-mat)))))))))))
-
 (define (print-mat4 matrix)
   (define (vr i)
     (f32vector-ref matrix i))
@@ -324,77 +244,77 @@
             (vr 3) (vr 7) (vr 11) (vr 15)))
    (else (error 'print-mat4 "Wrong argument type" matrix))))
 
-(bind-matrix-fun copy-mat4 "hpmCopyMat4" void
+(bind-math-fun copy-mat4 "hpmCopyMat4" void
                  (source f32vector) (result f32vector))
-(bind-matrix-fun m* "hpmMultMat4" void
+(bind-math-fun m* "hpmMultMat4" void
                  (mat-a f32vector) (mat-b f32vector) (result f32vector))
-(bind-matrix-fun mat4-identity "hpmIdentityMat4" void
+(bind-math-fun mat4-identity "hpmIdentityMat4" void
                  (result f32vector))
-(bind-matrix-fun translation "hpmTranslation" void
+(bind-math-fun translation "hpmTranslation" void
                  (v f32vector) (result f32vector))
-(bind-matrix-fun translate "hpmTranslate" void
+(bind-math-fun translate "hpmTranslate" void
                  (v f32vector) (matrix f32vector))
-(bind-matrix-fun x-rotation "hpmXRotation" void
+(bind-math-fun x-rotation "hpmXRotation" void
                  (rotation float) (result f32vector))
-(bind-matrix-fun rotate-x "hpmRotateX" void
+(bind-math-fun rotate-x "hpmRotateX" void
                  (rotation float) (matrix f32vector))
-(bind-matrix-fun y-rotation "hpmYRotation" void
+(bind-math-fun y-rotation "hpmYRotation" void
                  (rotation float) (result f32vector))
-(bind-matrix-fun rotate-y "hpmRotateY" void
+(bind-math-fun rotate-y "hpmRotateY" void
                  (rotation float) (matrix f32vector))
-(bind-matrix-fun z-rotation "hpmZRotation" void
+(bind-math-fun z-rotation "hpmZRotation" void
                  (rotation float) (result f32vector))
-(bind-matrix-fun rotate-z "hpmRotateZ" void
+(bind-math-fun rotate-z "hpmRotateZ" void
                  (rotation float) (matrix f32vector))
-(bind-matrix-fun axis-angle-rotation "hpmAxisAngleRotation" void
+(bind-math-fun axis-angle-rotation "hpmAxisAngleRotation" void
                  (axis f32vector) (angle float) (result f32vector))
-(bind-matrix-fun rotate-axis-angle "hpmRotateAxisAngle" void
+(bind-math-fun rotate-axis-angle "hpmRotateAxisAngle" void
                  (axis f32vector) (angle float) (matrix f32vector))
-(bind-matrix-fun quaternion-rotation "hpmQuaternionRotation" void
+(bind-math-fun quaternion-rotation "hpmQuaternionRotation" void
                  (q f32vector) (result f32vector))
-(bind-matrix-fun rotate-quaternion "hpmRotateQuaternion" void
+(bind-math-fun rotate-quaternion "hpmRotateQuaternion" void
                  (q f32vector) (matrix f32vector))
-(bind-matrix-fun ypr-rotation "hpmYPRRotation" void
+(bind-math-fun ypr-rotation "hpmYPRRotation" void
                  (yaw float) (pitch float) (roll float) (result f32vector))
-(bind-matrix-fun rotate-ypr "hpmRotateYPR" void
+(bind-math-fun rotate-ypr "hpmRotateYPR" void
                  (yaw float) (pitch float) (roll float) (matrix f32vector))
-(bind-matrix-fun 2d-scaling "hpm2DScaling" void
+(bind-math-fun 2d-scaling "hpm2DScaling" void
                  (scale-x float) (scale-y float) (result f32vector))
-(bind-matrix-fun scale-2d "hpmScale2D" void
+(bind-math-fun scale-2d "hpmScale2D" void
                  (scale-x float) (scale-y float) (matrix f32vector))
-(bind-matrix-fun 3d-scaling "hpm3DScaling" void
+(bind-math-fun 3d-scaling "hpm3DScaling" void
                  (scale-x float) (scale-y float) (scale-z float) (result f32vector))
-(bind-matrix-fun scale-3d "hpmScale3D" void
+(bind-math-fun scale-3d "hpmScale3D" void
                  (scale-x float) (scale-y float) (scale-z float) (matrix f32vector))
-(bind-matrix-fun scaling "hpmScaling" void
+(bind-math-fun scaling "hpmScaling" void
                  (scale float) (result f32vector))
-(bind-matrix-fun scale "hpmScale" void
+(bind-math-fun scale "hpmScale" void
                  (scale float) (matrix f32vector))
-(bind-matrix-fun flip-x "hpmFlipY" void
+(bind-math-fun flip-x "hpmFlipY" void
                  (matrix f32vector))
-(bind-matrix-fun flip-z "hpmFlipZ" void
+(bind-math-fun flip-z "hpmFlipZ" void
                  (matrix f32vector))
-(bind-matrix-fun translate-rotate-scale-2d "hpmTranslateRotateScale2D" void
+(bind-math-fun translate-rotate-scale-2d "hpmTranslateRotateScale2D" void
                  (v f32vector) (rotate float) (scale float) 
                  (result f32vector))
-(bind-matrix-fun transpose "hpmTranspose" void
+(bind-math-fun transpose "hpmTranspose" void
                  (matrix f32vector) (result f32vector))
-(bind-matrix-fun inverse "hpmInverse" void
+(bind-math-fun inverse "hpmInverse" void
                  (matrix f32vector) (result f32vector))
-(bind-matrix-fun ortho "hpmOrtho" void
+(bind-math-fun ortho "hpmOrtho" void
                  (width int) (height int) (near float) (far float)
                  (result f32vector))
-(bind-matrix-fun frustum "hpmFrustum" void
+(bind-math-fun frustum "hpmFrustum" void
                  (left float) (right float) (bottom float) (top float)
                  (near float) (far float)
                  (result f32vector))
-(bind-matrix-fun perspective "hpmPerspective" void
+(bind-math-fun perspective "hpmPerspective" void
                  (width int) (height int) (near float) (far float) (fov-angle float)
                  (result f32vector))
-(bind-matrix-fun look-at "hpmLookAt" void
+(bind-math-fun look-at "hpmLookAt" void
                  (eye f32vector) (obj f32vector) (up f32vector)
                  (result f32vector))
-(bind-matrix-fun camera-inverse "hpmCameraInverse" void
+(bind-math-fun camera-inverse "hpmCameraInverse" void
                  (camera f32vector)
                  (result f32vector))
 
