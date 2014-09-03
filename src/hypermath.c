@@ -75,11 +75,20 @@ float hpmDot(const float *pointA, const float *pointB){
 void hpmMat4VecMult(const float *mat, float *point){
     HPMmat4 *m = (HPMmat4 *) mat;
     HPMpoint *p = (HPMpoint *) point;
-    float x, y, z;
+    float x, y, z, w;
     x = p->x; y = p->y; z = p->z;
+    w = m->_41*x + m->_42*y + m->_43*z + m->_44;
+
     p->x = m->_11*x + m->_12*y + m->_13*z + m->_14;
     p->y = m->_21*x + m->_22*y + m->_23*z + m->_24;
     p->z = m->_31*x + m->_32*y + m->_33*z + m->_34;
+
+    if (w != 1.0){
+        w = 1.0/w;
+        p->x *= w;
+        p->y *= w;
+        p->z *= w;
+    }
 }
 
 void hpmMat4VecArrayMult(const float *mat, float *vec, size_t length, size_t stride){
