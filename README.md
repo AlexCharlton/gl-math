@@ -204,7 +204,7 @@ Destructively multiply `VECTOR` by `MATRIX`.
 
     [procedure] (m*vector-array! MATRIX VECTORS stride: [STRIDE] length: [LENGTH])
 
-Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in number of floats (which must be at least 3). `VECTORS` may be given as an f32vector or a pointer. When given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
+Destructively multiply the array of 3 element floats `VECTORS` by `MATRIX`. `VECTORS` may be given as an f32vector or a pointer. The keyword `STRIDE` specifies the number of elements between consecutive vectors, given in number of floats (which must be at least 3) when `VECTORS` is an f32vector and in bytes when `VECTORS` is a pointer. When `VECTORS` is given as a pointer, the keyword `LENGTH` must be provided, specifying the number of vectors in `VECTORS`.
 
     [procedure] (lerp A B T [RESULT])
 
