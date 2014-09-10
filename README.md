@@ -322,7 +322,13 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
-### Version 0.5.0
+### Version 0.5.2
+10 September 2014
+
+* `m*vector-array!`: Stride is given in bytes when vector is a pointer
+
+**Version 0.5.0**
+
 2 September 2014
 
 * Many new vector and quaternion functions
