@@ -733,6 +733,32 @@ void hpmInverse(const float *mat, float *result){
     }
 }
 
+void hpmFastInverseTranspose(const float *mat, float *result){
+    HPMmat4 *m = (HPMmat4 *) mat;
+    HPMmat4 *r = (HPMmat4 *) result;
+    // Rotation component
+    r->_11 = m->_11;
+    r->_12 = m->_12;
+    r->_13 = m->_13;
+
+    r->_21 = m->_21;
+    r->_22 = m->_22;
+    r->_23 = m->_23;
+
+    r->_31 = m->_31;
+    r->_32 = m->_32;
+    r->_33 = m->_33;
+    // Translation component
+    r->_41 = -(m->_11*m->_14 + m->_21*m->_24 + m->_31*m->_34);
+    r->_42 = -(m->_12*m->_14 + m->_22*m->_24 + m->_32*m->_34);
+    r->_43 = -(m->_13*m->_14 + m->_23*m->_24 + m->_33*m->_34);
+    // Last column
+    r->_14 = 0;
+    r->_24 = 0;
+    r->_34 = 0;
+    r->_44 = 1;
+}
+
 
 //
 // Matrix creation
