@@ -326,6 +326,11 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
+### Version 0.6.0
+8 October 2014
+
+* Add `fast-inverse-transpose`
+
 ### Version 0.5.2
 10 September 2014
 

@@ -9,4 +9,4 @@
 (install-extension
  'gl-math
  '("gl-math.so" "gl-math.import.so")
- '((version "0.5.2")))
+ '((version "0.6.0")))
