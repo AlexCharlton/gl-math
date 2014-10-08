@@ -137,6 +137,10 @@ Transpose `MATRIX`. If the matrix `RESULT` is given, it will be modified to cont
 
 Invert `MATRIX`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
 
+    [procedure] (fast-inverse-transpose MATRIX [RESULT])
+
+Efficiently inverse the transpose the unscaled `MATRIX`. If `MATRIX` has been scaled, this will produce incorrect results: `inverse` then `transpose` should be used instead. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, `MATRIX` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `MATRIX` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+
 ### Perspective matrices
     [procedure] (ortho WIDTH HEIGHT NEAR FAR [RESULT])
 

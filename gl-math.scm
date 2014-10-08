@@ -303,6 +303,8 @@
                  (matrix f32vector) (result f32vector))
 (bind-math-fun inverse "hpmInverse" void
                  (matrix f32vector) (result f32vector))
+(bind-math-fun fast-inverse-transpose "hpmFastInverseTranspose" void
+                 (matrix f32vector) (result f32vector))
 (bind-math-fun ortho "hpmOrtho" void
                  (width int) (height int) (near float) (far float)
                  (result f32vector))
