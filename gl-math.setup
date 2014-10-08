@@ -1,7 +1,10 @@
 ;; gl-math.setup -*- scheme -*-
 
-(compile -d0 -O3 -Ihypermath/include/ -J -s gl-math.scm hypermath/src/hypermath.c)
-(compile -d0 -O3 -s gl-math.import.scm)
+(define compile-options "-d0 -O3 -C '-O3'")
+
+(compile ,compile-options -Ihypermath/include/ -J -s gl-math.scm
+         hypermath/src/hypermath.c)
+(compile ,compile-options -s gl-math.import.scm)
 
 (install-extension
  'gl-math
