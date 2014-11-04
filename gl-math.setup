@@ -1,6 +1,6 @@
 ;; gl-math.setup -*- scheme -*-
 
-(define compile-options "-d0 -O3 -C '-O3'")
+(define compile-options "-d0 -O3 -C -O3")
 
 (compile ,compile-options -Ihypermath/include/ -J -s gl-math.scm
          hypermath/src/hypermath.c)
