@@ -304,7 +304,9 @@
                  (scale float) (result f32vector))
 (bind-math-fun scale "hpmScale" void
                  (scale float) (matrix f32vector))
-(bind-math-fun flip-x "hpmFlipY" void
+(bind-math-fun flip-x "hpmFlipX" void
+                 (matrix f32vector))
+(bind-math-fun flip-y "hpmFlipY" void
                  (matrix f32vector))
 (bind-math-fun flip-z "hpmFlipZ" void
                  (matrix f32vector))
