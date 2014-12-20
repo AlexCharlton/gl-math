@@ -55,7 +55,7 @@
 (define radians->degrees
   (foreign-lambda float "hpmRadiansToDegrees" float))
 
-(define pi 3.14159265358979)
+(define pi 3.1415926535897932384626433832795028842)
 (define pi/2 (/ pi 2))
 
 ;;; Vector operations
@@ -107,6 +107,18 @@
      matrix vector (quotient (f32vector-length vector)
                              (if (zero? stride) 3 stride))
      (* stride 4)))
+   ((u8vector? vector)
+    (when (and (< stride 12) (not (zero? stride)))
+      (error 'm*vector-array! "Stride must be at least 12 when vector is a u8vector" stride))
+    ((cond
+      ((f32vector? matrix)
+       (foreign-lambda void "hpmMat4VecArrayMult" f32vector u8vector size_t size_t))
+      ((pointer? matrix)
+       (foreign-lambda void "hpmMat4VecArrayMult" c-pointer u8vector size_t size_t))
+      (else (error 'm*vector-array! "Wrong argument type" matrix)))
+     matrix vector (quotient (u8vector-length vector)
+                             (if (zero? stride) 12 stride))
+     stride))
    ((pointer? vector)
     (when (and (< stride 12) (not (zero? stride)))
       (error 'm*vector-array! "Stride must be at least 12 when vector is a pointer" stride))
