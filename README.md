@@ -146,13 +146,22 @@ Efficiently inverse the transpose the unscaled `MATRIX`. If `MATRIX` has been sc
 
 Create an orthographic projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
+    [procedure] (ortho-viewport LEFT RIGHT NEAR FAR VIEWPORT-LEFT VIEWPORT-RIGHT VIEWPORT-BOTTOM VIEWPORT-TOP [RESULT])
+
+Create an orthographic projection matrix mapping the `LEFT`, `RIGHT`, `TOP`, `BOTTOM`, `NEAR`, `FAR` cube to a viewport of `VIEWPORT-LEFT`, `VIEWPORT-RIGHT`, `VIEWPORT-TOP`, `VIEWPORT-BOTTOM`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
     [procedure] (perspective WIDTH HEIGHT NEAR FAR ANGLE [RESULT])
 
 Create an perspective projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (frustum LEFT RIGHT BOTTOM TOP NEAR FAR [RESULT])
 
-Create a view-frustum matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create a perspective projection matrix defined by a frustum with a near side of `LEFT`, `RIGHT`, `TOP`, `BOTTOM`, `NEAR`, and a far side at `FAR`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (frustum-viewport LEFT RIGHT BOTTOM TOP NEAR FAR VIEWPORT-LEFT VIEWPORT-RIGHT VIEWPORT-BOTTOM VIEWPORT-TOP [RESULT])
+
+Create a perspective projection matrix mapping the `LEFT`, `RIGHT`, `TOP`, `BOTTOM`, `NEAR`, `FAR` frustum to a viewport of `VIEWPORT-LEFT`, `VIEWPORT-RIGHT`, `VIEWPORT-BOTTOM`, `VIEWPORT-TOP`. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+
 
 ### Camera functions
     [procedure] (look-at EYE OBJ UP [RESULT])
