@@ -164,7 +164,7 @@ Inverse then transpose the given matrix into `result` much faster than if `hpmIn
 
 Create an orthographic projection matrix.
 
-    void hpmOrthoViewport(float left, float right, float top, float bottom, float near, float far, float vLeft, float vRight, float vTop, float vBottom, float *mat);
+    void hpmOrthoViewport(float left, float right, float bottom, float top, float near, float far, float vLeft, float vRight, float vBottom, float vTop, float *mat);
 
 Create an orthographic projection matrix mapping the `left`, `right`, `top`, `bottom`, `near`, `far` cube to a viewport of `vLeft`, `vRight`, `vTop`, `vBottom`.
 
@@ -176,7 +176,7 @@ Create an perspective projection matrix.
 
 Create a perspective projection matrix defined by a frustum with a near side of `left`, `right`, `top`, `bottom`, `near`, and side at `far`.
 
-    void hpmFrustumViewport(float left, float right, float bottom, float top, float near, float far, float vLeft, float vRight, float vTop, float vBottom, float *mat);
+    void hpmFrustumViewport(float left, float right, float bottom, float top, float near, float far, float vLeft, float vRight, float vBottom, float vTop, float *mat);
 
 Create an perspective projection matrix mapping the `left`, `right`, `top`, `bottom`, `near`, `far` frustum to a viewport of `vLeft`, `vRight`, `vTop`, `vBottom`.
 
