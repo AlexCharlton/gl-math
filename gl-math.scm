@@ -322,9 +322,21 @@
 (bind-math-fun ortho "hpmOrtho" void
                  (width int) (height int) (near float) (far float)
                  (result f32vector))
+(bind-math-fun ortho-viewport "hpmOrthoViewport" void
+                 (left float) (right float) (bottom float) (top float)
+                 (near float) (far float)
+                 (viewport-left float) (viewport-right float)
+                 (viewport-bottom float) (viewport-top float)
+                 (result f32vector))
 (bind-math-fun frustum "hpmFrustum" void
                  (left float) (right float) (bottom float) (top float)
                  (near float) (far float)
+                 (result f32vector))
+(bind-math-fun frustum-viewport "hpmFrustumViewport" void
+                 (left float) (right float) (bottom float) (top float)
+                 (near float) (far float)
+                 (viewport-left float) (viewport-right float)
+                 (viewport-bottom float) (viewport-top float)
                  (result f32vector))
 (bind-math-fun perspective "hpmPerspective" void
                  (width int) (height int) (near float) (far float) (fov-angle float)
