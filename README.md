@@ -152,7 +152,7 @@ Create an orthographic projection matrix mapping the `LEFT`, `RIGHT`, `TOP`, `BO
 
     [procedure] (perspective WIDTH HEIGHT NEAR FAR ANGLE [RESULT])
 
-Create an perspective projection matrix. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create an perspective projection matrix with field of view of `ANGLE` degrees. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (frustum LEFT RIGHT BOTTOM TOP NEAR FAR [RESULT])
 
