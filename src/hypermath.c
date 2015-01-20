@@ -765,9 +765,9 @@ void hpmFastInverseTranspose(const float *mat, float *result){
 //
 
 // Projection
-void hpmOrthoViewport(float left, float right, float top, float bottom,
+void hpmOrthoViewport(float left, float right, float bottom, float top,
                       float near, float far,
-                      float vLeft, float vRight, float vTop, float vBottom,
+                      float vLeft, float vRight, float vBottom, float vTop,
                       float *mat){
     HPMmat4 *m = (HPMmat4 *) mat;
     initMat4(m);
@@ -790,7 +790,7 @@ void hpmOrtho(int width, int height, float near, float far, float *mat){
 
 void hpmFrustumViewport(float left, float right, float bottom, float top,
                         float near, float far,
-                        float vLeft, float vRight, float vTop, float vBottom,
+                        float vLeft, float vRight, float vBottom, float vTop,
                         float *mat){
     HPMmat4 *m = (HPMmat4 *) mat;
     initMat4(m);
