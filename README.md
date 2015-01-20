@@ -172,7 +172,7 @@ Invert `CAMERA` in an efficient fashion. This allows the camera to be constructe
     [procedure] (point-y-set! POINT)
     [procedure] (point-z-set! POINT)
 
-Vector constructor, getters, and setters. If `NON-GC` is `#t`, the point is created in a non-garbage-collected area (the memory will still be freed when there are no more references to the vector). 
+Vector constructor, getters, and setters. If `NON-GC?` is `#t`, the point is created in a non-garbage-collected area (the memory will still be freed when there are no more references to the vector).
 
     [procedure] (v+ A B [RESULT])
  
