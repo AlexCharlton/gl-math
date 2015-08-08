@@ -34,7 +34,7 @@ Make a copy of `MATRIX`. If the matrix `RESULT` is given, it will be modified to
 
     [procedure] (m* A B [RESULT])
 
-Multiply matrix `A` by matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
+Multiply matrix `A` with matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (m*s A S [RESULT])
 
