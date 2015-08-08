@@ -36,6 +36,19 @@ Make a copy of `MATRIX`. If the matrix `RESULT` is given, it will be modified to
 
 Multiply matrix `A` by matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
 
+    [procedure] (m*s A S [RESULT])
+
+Multiply matrix `A` by scalar `S`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` must be an f32vector and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` must be an f32vector and the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (m+ A B [RESULT])
+
+Add matrix `A` by matrix `B`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
+
+    [procedure] (m- A B [RESULT])
+
+Subtract matrix `B` from matrix `A`. If the matrix `RESULT` is given, it will be modified to contain the results of the multiplication. If `RESULT` is `#t`, `A` and `B` must be f32vectors and the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, `A` and `B` must be f32vectors and the returned value will be an f32vector located in normal garbage collected memory.
+
+
     [procedure] (mat4-identity [RESULT])
 
 Return an identity matrix. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
@@ -152,7 +165,7 @@ Create an orthographic projection matrix mapping the `LEFT`, `RIGHT`, `TOP`, `BO
 
     [procedure] (perspective WIDTH HEIGHT NEAR FAR ANGLE [RESULT])
 
-Create an perspective projection matrix with field of view of `ANGLE` degrees. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
+Create an perspective projection matrix with a field of view of `ANGLE` degrees. If the matrix `RESULT` is given, it will be modified to contain the result. If `RESULT` is `#t`, the returned value will be an f32vector located in non-garbage-collected memory (the memory will still be freed when there are no more references to the matrix). If `RESULT` is not provided, the returned value will be an f32vector located in normal garbage collected memory.
 
     [procedure] (frustum LEFT RIGHT BOTTOM TOP NEAR FAR [RESULT])
 
