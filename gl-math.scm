@@ -262,6 +262,12 @@
                  (source f32vector) (result f32vector))
 (bind-math-fun m* "hpmMultMat4" void
                  (mat-a f32vector) (mat-b f32vector) (result f32vector))
+(bind-math-fun m*s "hpmMultMat4S" void
+               (mat-a f32vector) (s float) (result f32vector))
+(bind-math-fun m+ "hpmAddMat4" void
+               (mat-a f32vector) (mat-b f32vector) (result f32vector))
+(bind-math-fun m- "hpmSubMat4" void
+                 (mat-a f32vector) (mat-b f32vector) (result f32vector))
 (bind-math-fun mat4-identity "hpmIdentityMat4" void
                  (result f32vector))
 (bind-math-fun translation "hpmTranslation" void
