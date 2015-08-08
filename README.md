@@ -348,6 +348,14 @@ Converts `ANGLE` from radians to degrees.
 ```
 
 ## Version history
+### Version 0.8.0
+7 August 2014
+
+* Add `m*`, `m+`, `m-`
+
+### Version 0.7.0
+* Add `frustum`, `frustum-viewport`
+
 ### Version 0.6.0
 8 October 2014
 
