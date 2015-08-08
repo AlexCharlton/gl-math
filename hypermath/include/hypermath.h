@@ -83,6 +83,12 @@ void hpmCopyMat4(const float *source, float *dest);
 
 void hpmMultMat4(const float *matA, const float *matB, float *result);
 
+void hpmMultMat4S(const float *matA, const float s, float *result);
+
+void hpmAddMat4(const float *matA, const float *matB, float *result);
+
+void hpmSubMat4(const float *matA, const float *matB, float *result);
+
 void hpmPrintMat4(const float *m);
 
 void hpmIdentityMat4(float *m);

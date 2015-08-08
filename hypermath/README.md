@@ -46,6 +46,18 @@ Print the given 4x4 matrix.
 
 Multiply matrix `A` and `B` into `results`.
 
+    void hpmMultMat4S(const float *A, const float S, float *result);
+
+Multiply matrix `A` with scalar `S` into `results`.
+
+    void hpmAddMat4(const float *matA, const float *matB, float *result);
+
+Add matrix `A` and `B` into `results`.
+
+    void hpmSubMat4(const float *matA, const float *matB, float *result);
+
+Subtract matrix `B` from `A` into `results`.
+
     void hpmIdentityMat4(float *m);
 
 Turn the given matrix into an identity matrix.
@@ -170,15 +182,15 @@ Create an orthographic projection matrix mapping the `left`, `right`, `top`, `bo
 
     void hpmPerspective(int width, int height, float near, float far, float angle, float *mat);
 
-Create an perspective projection matrix.
+Create an perspective projection matrix with a field of view of `angle` degrees
 
     void hpmFrustum(float left, float right, float bottom, float top, float near, float far, float *mat);
 
-Create a perspective projection matrix defined by a frustum with a near side of `left`, `right`, `top`, `bottom`, `near`, and side at `far`.
+Create a perspective projection matrix defined by a frustum with a near side of `left`, `right`, `top`, `bottom`, `near`, and the far side at `far`.
 
     void hpmFrustumViewport(float left, float right, float bottom, float top, float near, float far, float vLeft, float vRight, float vBottom, float vTop, float *mat);
 
-Create an perspective projection matrix mapping the `left`, `right`, `top`, `bottom`, `near`, `far` frustum to a viewport of `vLeft`, `vRight`, `vTop`, `vBottom`.
+Create a perspective projection matrix mapping the `left`, `right`, `top`, `bottom`, `near`, `far` frustum to a viewport of `vLeft`, `vRight`, `vTop`, `vBottom`.
 
 ### Camera
     void hpmLookAt(float *eye, float *cam, float *up, float *mat);
@@ -314,6 +326,9 @@ Convert radians into degrees.
 
 
 ## Version history
+### Version 0.8.0
+* Add `hpmAddMat4`, `hpmSubMat4`, `hpmMultMat4S`
+
 ### Version 0.7.0
 * Add `hpmOrthoViewport`, `hpmFrustumViewport`
 
