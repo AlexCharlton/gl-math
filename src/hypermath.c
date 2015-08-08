@@ -312,6 +312,80 @@ void hpmMultMat4(const float *matA, const float *matB, float *result){
     r->_44 = a->_41*b->_14 + a->_42*b->_24 + a->_43*b->_34 + a->_44*b->_44;
 }
 
+void hpmMultMat4S(const float *matA, const float s, float *result){
+    HPMmat4 *a = (HPMmat4 *) matA;
+    HPMmat4 *r = (HPMmat4 *) result;
+    r->_11 = a->_11*s;
+    r->_12 = a->_12*s;
+    r->_13 = a->_13*s;
+    r->_14 = a->_14*s;
+
+    r->_21 = a->_21*s;
+    r->_22 = a->_22*s;
+    r->_23 = a->_23*s;
+    r->_24 = a->_24*s;
+
+    r->_31 = a->_31*s;
+    r->_32 = a->_32*s;
+    r->_33 = a->_33*s;
+    r->_34 = a->_34*s;
+
+    r->_41 = a->_41*s;
+    r->_42 = a->_42*s;
+    r->_43 = a->_43*s;
+    r->_44 = a->_44*s;
+}
+
+void hpmAddMat4(const float *matA, const float *matB, float *result){
+    HPMmat4 *a = (HPMmat4 *) matA;
+    HPMmat4 *b = (HPMmat4 *) matB;
+    HPMmat4 *r = (HPMmat4 *) result;
+    r->_11 = a->_11+b->_11;
+    r->_12 = a->_12+b->_12;
+    r->_13 = a->_13+b->_13;
+    r->_14 = a->_14+b->_14;
+
+    r->_21 = a->_21+b->_21;
+    r->_22 = a->_22+b->_22;
+    r->_23 = a->_23+b->_23;
+    r->_24 = a->_24+b->_24;
+
+    r->_31 = a->_31+b->_31;
+    r->_32 = a->_32+b->_32;
+    r->_33 = a->_33+b->_33;
+    r->_34 = a->_34+b->_34;
+
+    r->_41 = a->_41+b->_41;
+    r->_42 = a->_42+b->_42;
+    r->_43 = a->_43+b->_43;
+    r->_44 = a->_44+b->_44;
+}
+
+void hpmSubMat4(const float *matA, const float *matB, float *result){
+    HPMmat4 *a = (HPMmat4 *) matA;
+    HPMmat4 *b = (HPMmat4 *) matB;
+    HPMmat4 *r = (HPMmat4 *) result;
+    r->_11 = a->_11-b->_11;
+    r->_12 = a->_12-b->_12;
+    r->_13 = a->_13-b->_13;
+    r->_14 = a->_14-b->_14;
+
+    r->_21 = a->_21-b->_21;
+    r->_22 = a->_22-b->_22;
+    r->_23 = a->_23-b->_23;
+    r->_24 = a->_24-b->_24;
+
+    r->_31 = a->_31-b->_31;
+    r->_32 = a->_32-b->_32;
+    r->_33 = a->_33-b->_33;
+    r->_34 = a->_34-b->_34;
+
+    r->_41 = a->_41-b->_41;
+    r->_42 = a->_42-b->_42;
+    r->_43 = a->_43-b->_43;
+    r->_44 = a->_44-b->_44;
+}
+
 void hpmTranslation(float *vector, float *mat){
     hpmIdentityMat4(mat);
     HPMmat4 *m = (HPMmat4 *) mat;
