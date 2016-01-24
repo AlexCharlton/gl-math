@@ -14,6 +14,10 @@
         (let* ((main-mat (first (last vars)))
                (other-vars (butlast vars))
                (result? (compare main-mat 'result))
+               (result-length (or (and result?
+                                       (number? (last (last vars)))
+                                       (last (last vars)))
+                                  16))
                (pointer-name (symbol-append 'pointer- (strip-syntax name)))
                (vector-name (symbol-append 'f32vector- (strip-syntax name)))
                (types (map second other-vars))
@@ -29,7 +33,7 @@
           `(begin
              (define (,vector-name ,@vars
                                    ,@(if result?
-                                         `(#!optional (,main-mat (make-f32vector 16)))
+                                         `(#!optional (,main-mat (make-f32vector ,result-length)))
                                          `(,main-mat)))
                ((foreign-lambda ,return ,c-name ,@types f32vector)
                 ,@vars ,main-mat)
@@ -44,7 +48,7 @@
                 ((pointer? ,main-mat) (,pointer-name ,@vars ,main-mat))
                 ((f32vector? ,main-mat) (,vector-name ,@vars ,main-mat))
                 ((boolean? ,main-mat) (,vector-name ,@vars
-                                                    (make-f32vector 16 0 ,main-mat)))
+                                                    (make-f32vector ,result-length 0.0 ,main-mat)))
                 (else (error ',name "Wrong argument type" ,main-mat)))))))))))
 
 
@@ -135,16 +139,16 @@
   vector)
 
 (bind-math-fun cross-product "hpmCross" void
-               (a f32vector) (b f32vector) (result f32vector))
+               (a f32vector) (b f32vector) (result f32vector 3))
 
 (bind-math-fun v+ "hpmAddVec" void
-               (a f32vector) (b f32vector) (result f32vector))
+               (a f32vector) (b f32vector) (result f32vector 3))
 
 (bind-math-fun v- "hpmSubVec" void
-               (a f32vector) (b f32vector) (result f32vector))
+               (a f32vector) (b f32vector) (result f32vector 3))
 
 (bind-math-fun v* "hpmMultVec" void
-               (v f32vector) (s float) (result f32vector))
+               (v f32vector) (s float) (result f32vector 3))
 
 (bind-math-fun vector-magnitude "hpmMagnitude" float
                (v f32vector))
@@ -156,7 +160,7 @@
                (a f32vector) (b f32vector))
 
 (bind-math-fun lerp "hpmLerp" void
-               (a f32vector) (b f32vector) (t float) (result f32vector))
+               (a f32vector) (b f32vector) (t float) (result f32vector 3))
 
 ;;; Quaternion operations
 (define (make-quaternion x y z w #!optional non-gc?)
@@ -195,46 +199,46 @@
                (q f32vector))
 
 (bind-math-fun quaternion-inverse "hpmQuatInverse" void
-               (q f32vector) (result f32vector))
+               (q f32vector) (result f32vector 4))
 
 (bind-math-fun quaternion-cross-product "hpmQuatCross" void
-               (a f32vector) (b f32vector) (result f32vector))
+               (a f32vector) (b f32vector) (result f32vector 4))
 
 (bind-math-fun quaternion-rotate-point! "hpmQuatVecRotate" void
                (q f32vector) (p f32vector))
 
 (bind-math-fun quaternion-axis-angle-rotation "hpmAxisAngleQuatRotation" void
-               (axis f32vector) (angle float) (result f32vector))
+               (axis f32vector) (angle float) (result f32vector 4))
 
 (bind-math-fun quaternion-rotate-axis-angle "hpmRotateQuatAxisAngle" void
                (axis f32vector) (angle float) (q f32vector))
 
 (bind-math-fun quaternion-x-rotation "hpmXQuatRotation" void
-               (angle float) (result f32vector))
+               (angle float) (result f32vector 4))
 
 (bind-math-fun quaternion-rotate-x "hpmRotateQuatX" void
                (angle float) (q f32vector))
 
 (bind-math-fun quaternion-y-rotation "hpmYQuatRotation" void
-               (angle float) (result f32vector))
+               (angle float) (result f32vector 4))
 
 (bind-math-fun quaternion-rotate-y "hpmRotateQuatY" void
                (angle float) (q f32vector))
 
 (bind-math-fun quaternion-z-rotation "hpmZQuatRotation" void
-               (angle float) (result f32vector))
+               (angle float) (result f32vector 4))
 
 (bind-math-fun quaternion-rotate-z "hpmRotateQuatZ" void
                (angle float) (q f32vector))
 
 (bind-math-fun quaternion-ypr-rotation "hpmYPRQuatRotation" void
-               (yaw float) (pitch float) (roll float) (result f32vector))
+               (yaw float) (pitch float) (roll float) (result f32vector 4))
 
 (bind-math-fun quaternion-rotate-ypr "hpmRotateQuatYPR" void
                (yaw float) (pitch float) (roll float) (q f32vector))
 
 (bind-math-fun slerp "hpmSlerp" void
-               (a f32vector) (b f32vector) (t float) (result f32vector))
+               (a f32vector) (b f32vector) (t float) (result f32vector 4))
 
 
 ;;; Matrix operations
