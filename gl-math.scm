@@ -45,7 +45,8 @@
              (define (,name ,@vars ,@(if result? '(#!optional) '())
                             ,main-mat)
                (cond
-                ((pointer? ,main-mat) (,pointer-name ,@vars ,main-mat))
+                ((or (pointer? ,main-mat) (locative? ,main-mat))
+                 (,pointer-name ,@vars ,main-mat))
                 ((f32vector? ,main-mat) (,vector-name ,@vars ,main-mat))
                 ((boolean? ,main-mat) (,vector-name ,@vars
                                                     (make-f32vector ,result-length 0.0 ,main-mat)))
@@ -90,7 +91,7 @@
 
 (define (m*vector! matrix vector)
   (cond
-   ((pointer? matrix)
+   ((or (pointer? matrix) (locative? matrix))
     ((foreign-lambda void "hpmMat4VecMult" c-pointer f32vector) matrix vector))
    ((f32vector? matrix)
     ((foreign-lambda void "hpmMat4VecMult" f32vector f32vector) matrix vector))
@@ -105,7 +106,7 @@
     ((cond
       ((f32vector? matrix)
        (foreign-lambda void "hpmMat4VecArrayMult" f32vector f32vector size_t size_t))
-      ((pointer? matrix)
+      ((or (pointer? matrix) (locative? matrix))
        (foreign-lambda void "hpmMat4VecArrayMult" c-pointer f32vector size_t size_t))
       (else (error 'm*vector-array! "Wrong argument type" matrix)))
      matrix vector (quotient (f32vector-length vector)
@@ -117,13 +118,13 @@
     ((cond
       ((f32vector? matrix)
        (foreign-lambda void "hpmMat4VecArrayMult" f32vector u8vector size_t size_t))
-      ((pointer? matrix)
+      ((or (pointer? matrix) (locative? matrix))
        (foreign-lambda void "hpmMat4VecArrayMult" c-pointer u8vector size_t size_t))
       (else (error 'm*vector-array! "Wrong argument type" matrix)))
      matrix vector (quotient (u8vector-length vector)
                              (if (zero? stride) 12 stride))
      stride))
-   ((pointer? vector)
+   ((or (pointer? vector) (locative? vector))
     (when (and (< stride 12) (not (zero? stride)))
       (error 'm*vector-array! "Stride must be at least 12 when vector is a pointer" stride))
     (when (< length 1)
@@ -131,7 +132,7 @@
     ((cond
       ((f32vector? matrix)
        (foreign-lambda void "hpmMat4VecArrayMult" f32vector c-pointer size_t size_t))
-      ((pointer? matrix)
+      ((or (pointer? matrix) (locative? matrix))
        (foreign-lambda void "hpmMat4VecArrayMult" c-pointer c-pointer size_t size_t))
       (else (error 'm*vector-array! "Wrong argument type" matrix)))
      matrix vector length stride))
@@ -248,7 +249,7 @@
   (define (pr i)
     (pointer-f32-ref (pointer+ matrix (* i 4))))
   (cond
-   ((pointer? matrix)
+   ((or (pointer? matrix) (locative? matrix))
     (format #t "[~a ~a ~a ~a~% ~a ~a ~a ~a~% ~a ~a ~a ~a~% ~a ~a ~a ~a]~%"
             (pr 0) (pr 4) (pr 8) (pr 12)
             (pr 1) (pr 5) (pr 9) (pr 13)
